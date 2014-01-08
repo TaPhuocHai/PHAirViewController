@@ -20,6 +20,10 @@
 		48C952AB187C2601004D3BEB /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 48C952A9187C2601004D3BEB /* InfoPlist.strings */; };
 		48C952AD187C2601004D3BEB /* PHAirTransactionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 48C952AC187C2601004D3BEB /* PHAirTransactionTests.m */; };
 		48E90C81187C2639007EA7E4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 48E90C80187C2639007EA7E4 /* Main.storyboard */; };
+		48E90C85187C278F007EA7E4 /* PHAirViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 48E90C84187C278F007EA7E4 /* PHAirViewController.m */; };
+		48E90C88187C27EF007EA7E4 /* PHSessionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 48E90C87187C27EF007EA7E4 /* PHSessionView.m */; };
+		48E90C8B187C28DB007EA7E4 /* PHMenuItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 48E90C8A187C28DB007EA7E4 /* PHMenuItemView.m */; };
+		48E90C8E187C2C61007EA7E4 /* PHMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 48E90C8D187C2C61007EA7E4 /* PHMenuViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +54,14 @@
 		48C952AA187C2601004D3BEB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		48C952AC187C2601004D3BEB /* PHAirTransactionTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PHAirTransactionTests.m; sourceTree = "<group>"; };
 		48E90C80187C2639007EA7E4 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		48E90C83187C278F007EA7E4 /* PHAirViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PHAirViewController.h; sourceTree = "<group>"; };
+		48E90C84187C278F007EA7E4 /* PHAirViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PHAirViewController.m; sourceTree = "<group>"; };
+		48E90C86187C27EF007EA7E4 /* PHSessionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PHSessionView.h; sourceTree = "<group>"; };
+		48E90C87187C27EF007EA7E4 /* PHSessionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PHSessionView.m; sourceTree = "<group>"; };
+		48E90C89187C28DB007EA7E4 /* PHMenuItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PHMenuItemView.h; sourceTree = "<group>"; };
+		48E90C8A187C28DB007EA7E4 /* PHMenuItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PHMenuItemView.m; sourceTree = "<group>"; };
+		48E90C8C187C2C61007EA7E4 /* PHMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PHMenuViewController.h; sourceTree = "<group>"; };
+		48E90C8D187C2C61007EA7E4 /* PHMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PHMenuViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,8 +121,11 @@
 		48C9528D187C2601004D3BEB /* PHAirTransaction */ = {
 			isa = PBXGroup;
 			children = (
+				48E90C82187C277A007EA7E4 /* PHAirViewController */,
 				48C95296187C2601004D3BEB /* PHAppDelegate.h */,
 				48C95297187C2601004D3BEB /* PHAppDelegate.m */,
+				48E90C8C187C2C61007EA7E4 /* PHMenuViewController.h */,
+				48E90C8D187C2C61007EA7E4 /* PHMenuViewController.m */,
 				48E90C80187C2639007EA7E4 /* Main.storyboard */,
 				48C95299187C2601004D3BEB /* Images.xcassets */,
 				48C9528E187C2601004D3BEB /* Supporting Files */,
@@ -145,6 +160,19 @@
 				48C952A9187C2601004D3BEB /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		48E90C82187C277A007EA7E4 /* PHAirViewController */ = {
+			isa = PBXGroup;
+			children = (
+				48E90C83187C278F007EA7E4 /* PHAirViewController.h */,
+				48E90C84187C278F007EA7E4 /* PHAirViewController.m */,
+				48E90C86187C27EF007EA7E4 /* PHSessionView.h */,
+				48E90C87187C27EF007EA7E4 /* PHSessionView.m */,
+				48E90C89187C28DB007EA7E4 /* PHMenuItemView.h */,
+				48E90C8A187C28DB007EA7E4 /* PHMenuItemView.m */,
+			);
+			path = PHAirViewController;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -245,7 +273,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				48C95298187C2601004D3BEB /* PHAppDelegate.m in Sources */,
+				48E90C8E187C2C61007EA7E4 /* PHMenuViewController.m in Sources */,
+				48E90C8B187C28DB007EA7E4 /* PHMenuItemView.m in Sources */,
+				48E90C88187C27EF007EA7E4 /* PHSessionView.m in Sources */,
 				48C95294187C2601004D3BEB /* main.m in Sources */,
+				48E90C85187C278F007EA7E4 /* PHAirViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
