@@ -16,6 +16,7 @@
 #define kDegreesRotate  -40
 #define kTranslateY     -20
 #define kTranslateZ     -300
+#define kAnimationDuraction 0.3f
 
 CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
 CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
@@ -284,6 +285,8 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
             [button addTarget:self action:@selector(rowDidTouch:) forControlEvents:UIControlEventTouchUpInside];
             [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
             button.frame = CGRectMake(0, firstTop + 44*j, 100, 44);
+            button.tag = j;
+            sessionView.containView.tag = i;
             [sessionView.containView addSubview:button];
         }
     }
@@ -334,20 +337,25 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 - (NSInteger)numberOfSession { return 0; }
 
-- (NSInteger)numberOfRowsInSession:(NSInteger)sesion
-{
-    return  0;
-}
+- (NSInteger)numberOfRowsInSession:(NSInteger)sesion { return  0; }
 
-- (NSString*)titleForRowAtIndexPath:(NSIndexPath*)indexPath
-{
-    return @"";
-}
+- (NSString*)titleForRowAtIndexPath:(NSIndexPath*)indexPath { return @""; }
+
+- (UIImage*)thumbnailImageAtIndexPath:(NSIndexPath*)indexPath { return nil; }
 
 #pragma mark - button action
 
-- (void)rowDidTouch:(id)sender
+- (void)rowDidTouch:(UIButton*)button
 {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(segueForRowAtIndexPath:)]) {
+        NSString * segue = [self.delegate segueForRowAtIndexPath:[NSIndexPath indexPathForRow:button.tag
+                                                                                    inSection:button.superview.tag]];
+        if (segue.length) {
+            // Show  animation
+            
+            [self performSegueWithIdentifier:segue sender:nil];
+        }
+    }
     NSLog(@"did touch");
 }
 
@@ -420,9 +428,12 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     _airImageView.layer.position = CGPointMake(newX, newY);
     _airImageView.layer.transform = currentTransform;
     [CATransaction commit];
-    
 
-    [UIView animateWithDuration:0.2 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+    [UIView animateWithDuration:kAnimationDuraction
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseInOut
+                     animations:^
+    {
         CATransform3D transform = _airImageView.layer.transform;
         transform = CATransform3DRotate(transform, DegreesToRadians(kDegreesRotate), 0, 1, 0);
         transform = CATransform3DTranslate(transform, _airImageView.width/3, kTranslateY, kTranslateZ);

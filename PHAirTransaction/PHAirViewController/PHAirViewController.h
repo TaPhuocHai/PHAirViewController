@@ -16,9 +16,10 @@
 - (NSInteger)numberOfSession;
 - (NSInteger)numberOfRowsInSession:(NSInteger)sesion;
 - (NSString*)titleForRowAtIndexPath:(NSIndexPath*)indexPath;
-@optional
-- (NSString*)segueForRowAtIndexPath:(NSIndexPath*)indexPath;
 - (NSString*)titleForHeaderAtSession:(NSInteger)session;
+@optional
+- (UIImage*)thumbnailImageAtIndexPath:(NSIndexPath*)indexPath;
+- (NSString*)segueForRowAtIndexPath:(NSIndexPath*)indexPath;
 @end
 
 @interface PHAirViewController : UIViewController <PHAirMenuDelegate, UIGestureRecognizerDelegate>

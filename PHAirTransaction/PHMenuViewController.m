@@ -37,4 +37,14 @@
     return [NSString stringWithFormat:@"Session %ld", (long)session];
 }
 
+- (NSString*)segueForRowAtIndexPath:(NSIndexPath*)indexPath
+{
+    return @"phair_root";
+}
+
+- (UIImage*)thumbnailImageAtIndexPath:(NSIndexPath*)indexPath
+{
+    return nil;
+}
+
 @end
