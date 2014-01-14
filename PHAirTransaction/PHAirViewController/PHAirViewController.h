@@ -25,8 +25,9 @@
 
 @property (nonatomic, assign) id <PHAirMenuDelegate> delegate;
 
-@property (nonatomic, strong)   UIView       * contentView;
-@property (nonatomic, strong)   UIImageView  * airImageView;
+@property (nonatomic, readonly) UIView           * contentView;
+@property (nonatomic, readonly) UIImageView      * airImageView;
+@property (nonatomic, readonly) UIViewController * fontViewController;
 
 - (void)reloadData;
 - (void)toggleAirOnViewController:(UIViewController*)controller;

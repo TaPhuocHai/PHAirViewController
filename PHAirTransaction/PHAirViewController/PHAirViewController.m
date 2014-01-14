@@ -8,12 +8,18 @@
 
 #import "PHAirViewController.h"
 
+#import <QuartzCore/QuartzCore.h>
+
 #define kMenuItemHeight 50
 #define kSessionWidth   220
 
+CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
+CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
+
 static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
-@interface PHAirViewController ()
+@interface PHAirViewController()
+@property (nonatomic, strong) UIView * contentImageView;
 @end
 
 @implementation PHAirViewController {
@@ -36,6 +42,8 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     PHSessionView * bottomSession;
 }
 
+@synthesize contentView = _contentView, airImageView = _airImageView;
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -47,10 +55,15 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     
     self.delegate = self;
     
-    // contentView
+    // Init contentView
     [self.view addSubview:self.contentView];
     
-    // root view controller
+    // Init airImageView
+    [self.view addSubview:self.contentImageView];
+    [self.contentImageView addSubview:self.airImageView];
+    self.airImageView.alpha = 0;
+    
+    // Init root view controller
     if ( self.storyboard) {
         @try {
             [self performSegueWithIdentifier:PHSegueRootIdentifier sender:nil];
@@ -71,23 +84,26 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 - (void)prepareForSegue:(PHAirViewControllerSegue *)segue sender:(id)sender
 {
-    NSString *identifier = segue.identifier;
     if ( [segue isKindOfClass:[PHAirViewControllerSegue class]] && sender == nil )
     {
-        if ( [identifier isEqualToString:PHSegueRootIdentifier] )
-        {
-            segue.performBlock = ^(PHAirViewControllerSegue* rvc_segue, UIViewController* svc, UIViewController* dvc)
-            {
-                [self addChildViewController:dvc];
-                
-                UIView * controllerView = dvc.view;
-                controllerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-                controllerView.frame = self.view.bounds;
-                [self.view addSubview:controllerView];
-
-                [dvc didMoveToParentViewController:self];
-            };
+        if (self.fontViewController && self.fontViewController.view.superview) {
+            [self.fontViewController removeFromParentViewController];
+            [self.fontViewController.view removeFromSuperview];
         }
+        
+        segue.performBlock = ^(PHAirViewControllerSegue* rvc_segue, UIViewController* svc, UIViewController* dvc)
+        {
+            _fontViewController = dvc;
+            
+            [self addChildViewController:dvc];
+            
+            UIView * controllerView = dvc.view;
+            controllerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+            controllerView.frame = self.view.bounds;
+            [self.view addSubview:controllerView];
+            
+            [dvc didMoveToParentViewController:self];
+        };
     }
 }
 
@@ -237,14 +253,13 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
         PHSessionView * sessionView = sessionViews[@(i)];
         if (!sessionView) {
             sessionView = [[PHSessionView alloc] initWithFrame:CGRectMake(0, 0, kSessionWidth, sessionHeight)];
-            sessionView.backgroundColor = [UIColor greenColor];
             [sessionViews setObject:sessionView forKey:@(i)];
         }
         // Set title for header session
         if ([self.delegate respondsToSelector:@selector(titleForHeaderAtSession:)]) {
             sessionView.label.text = [self.delegate titleForHeaderAtSession:i];
             sessionView.label.textColor = [UIColor blackColor];
-            sessionView.label.backgroundColor = [UIColor grayColor];
+            sessionView.label.backgroundColor = [UIColor clearColor];
         }
     }
     
@@ -256,7 +271,6 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
             [view removeFromSuperview];
         }
 
-        sessionView.containView.backgroundColor = [UIColor yellowColor];
         int firstTop = (sessionView.containView.frame.size.height - [rowsOfSession[i] intValue] * 44)/2;
         if (firstTop < 0) firstTop = 0;
         for (int j = 0; j < [rowsOfSession[i] intValue]; j ++) {
@@ -339,7 +353,6 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 {
     if (!_contentView) {
         _contentView = [[UIView alloc] initWithFrame:CGRectMake(0, -(self.view.height - kHeaderTitleHeight), kSessionWidth, (self.view.height - kHeaderTitleHeight)*3)];
-        _contentView.backgroundColor = [UIColor redColor];
     }
     return _contentView;
 }
@@ -347,12 +360,20 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 - (UIView*)airImageView
 {
     if (!_airImageView) {
-        _airImageView = [[UIImageView alloc] init];
+        _airImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height)];
     }
     return _airImageView;
 }
 
-#pragma mark - 
+- (UIView*)contentImageView
+{
+    if (!_contentImageView) {
+        _contentImageView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height)];
+    }
+    return _contentImageView;
+}
+
+#pragma mark - Show/Hide air view controller
 
 - (void)toggleAirOnViewController:(UIViewController*)controller
 {
@@ -362,6 +383,59 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
         panGestureRecognizer.delegate = self;
         [self.view addGestureRecognizer:panGestureRecognizer];
     }
+    
+    // Create Image
+    if (controller.navigationController) {
+        _airImageView.image = [self imageWithView:controller.navigationController.view];
+        [controller.navigationController setNavigationBarHidden:YES animated:NO];
+    } else {
+        _airImageView.image = [self imageWithView:controller.view];
+    }
+    _airImageView.alpha = 1;
+    [self.view bringSubviewToFront:_airImageView];
+    
+    // Remove font view controller
+    if (controller) {
+        [controller removeFromParentViewController];
+        [controller.view removeFromSuperview];
+    }
+    
+    // Setup animation
+    CATransform3D rotationAndPerspectiveTransform = CATransform3DIdentity;
+    rotationAndPerspectiveTransform.m34 = 1.0 / -600;
+    self.contentImageView.layer.sublayerTransform = rotationAndPerspectiveTransform;
+    
+    CGPoint anchorPoint = CGPointMake(1, 0.5);
+    
+    [CATransaction begin];
+    [CATransaction setDisableActions:YES];
+     CATransform3D currentTransform = _airImageView.layer.transform;
+    _airImageView.layer.anchorPoint = anchorPoint;
+    CGFloat newX = _airImageView.width * anchorPoint.x;
+    CGFloat newY = _airImageView.height * anchorPoint.y;
+    _airImageView.layer.position = CGPointMake(newX, newY);
+    _airImageView.layer.transform = currentTransform;
+    [CATransaction commit];
+    
+
+    [UIView animateWithDuration:0.2 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
+        CATransform3D transform = _airImageView.layer.transform;
+        transform = CATransform3DRotate(transform, DegreesToRadians(-60), 0, 1, 0);
+        transform = CATransform3DTranslate(transform, _airImageView.width/3, 0, -60);
+        _airImageView.layer.transform = transform;
+    } completion:^(BOOL finished) {
+    }];
+}
+
+#pragma mark - helper
+
+- (UIImage*)imageWithView:(UIView*)view
+{
+    UIGraphicsBeginImageContextWithOptions(view.bounds.size, NO, 0.0);
+    [view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage * img = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return img;
 }
 
 #pragma mark - Clean up
@@ -388,9 +462,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     UIViewController *parent = self;
     Class revealClass = [PHAirViewController class];
     
-    while ( nil != (parent = [parent parentViewController]) && ![parent isKindOfClass:revealClass] )
-    {
-    }
+    while ( nil != (parent = [parent parentViewController]) && ![parent isKindOfClass:revealClass] ) {}
     return (id)parent;
 }
 
