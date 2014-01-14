@@ -13,7 +13,6 @@
 @interface PHSessionView : UIView
 
 @property (nonatomic, strong) UILabel * label;
-
-- (UIButton*)buttonAtIndex:(NSInteger)index;
+@property (nonatomic, strong) UIView  * containView;
 
 @end

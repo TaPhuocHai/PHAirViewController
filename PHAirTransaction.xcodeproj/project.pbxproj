@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4876ECA81885595600F5A448 /* SKBounceAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4876ECA71885595600F5A448 /* SKBounceAnimation.m */; };
+		489B29CF18841E090041992A /* UIViewAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 489B29CE18841E090041992A /* UIViewAdditions.m */; };
 		48C95288187C2601004D3BEB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48C95287187C2601004D3BEB /* Foundation.framework */; };
 		48C9528A187C2601004D3BEB /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48C95289187C2601004D3BEB /* CoreGraphics.framework */; };
 		48C9528C187C2601004D3BEB /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48C9528B187C2601004D3BEB /* UIKit.framework */; };
@@ -37,6 +39,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4876ECA61885595600F5A448 /* SKBounceAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKBounceAnimation.h; sourceTree = "<group>"; };
+		4876ECA71885595600F5A448 /* SKBounceAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKBounceAnimation.m; sourceTree = "<group>"; };
+		489B29CD18841E090041992A /* UIViewAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIViewAdditions.h; sourceTree = "<group>"; };
+		489B29CE18841E090041992A /* UIViewAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIViewAdditions.m; sourceTree = "<group>"; };
 		48C95284187C2601004D3BEB /* PHAirTransaction.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PHAirTransaction.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		48C95287187C2601004D3BEB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		48C95289187C2601004D3BEB /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -88,6 +94,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4876ECA51885595600F5A448 /* SKBounceAnimation */ = {
+			isa = PBXGroup;
+			children = (
+				4876ECA61885595600F5A448 /* SKBounceAnimation.h */,
+				4876ECA71885595600F5A448 /* SKBounceAnimation.m */,
+			);
+			name = SKBounceAnimation;
+			path = Library/SKBounceAnimation;
+			sourceTree = "<group>";
+		};
+		489B29CC18841E090041992A /* KNAdditions */ = {
+			isa = PBXGroup;
+			children = (
+				489B29CD18841E090041992A /* UIViewAdditions.h */,
+				489B29CE18841E090041992A /* UIViewAdditions.m */,
+			);
+			name = KNAdditions;
+			path = Library/KNAdditions;
+			sourceTree = "<group>";
+		};
 		48C9527B187C2600004D3BEB = {
 			isa = PBXGroup;
 			children = (
@@ -121,6 +147,8 @@
 		48C9528D187C2601004D3BEB /* PHAirTransaction */ = {
 			isa = PBXGroup;
 			children = (
+				4876ECA51885595600F5A448 /* SKBounceAnimation */,
+				489B29CC18841E090041992A /* KNAdditions */,
 				48E90C82187C277A007EA7E4 /* PHAirViewController */,
 				48C95296187C2601004D3BEB /* PHAppDelegate.h */,
 				48C95297187C2601004D3BEB /* PHAppDelegate.m */,
@@ -272,8 +300,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4876ECA81885595600F5A448 /* SKBounceAnimation.m in Sources */,
 				48C95298187C2601004D3BEB /* PHAppDelegate.m in Sources */,
 				48E90C8E187C2C61007EA7E4 /* PHMenuViewController.m in Sources */,
+				489B29CF18841E090041992A /* UIViewAdditions.m in Sources */,
 				48E90C8B187C28DB007EA7E4 /* PHMenuItemView.m in Sources */,
 				48E90C88187C27EF007EA7E4 /* PHSessionView.m in Sources */,
 				48C95294187C2601004D3BEB /* main.m in Sources */,

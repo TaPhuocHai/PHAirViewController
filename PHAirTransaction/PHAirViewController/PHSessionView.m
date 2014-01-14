@@ -8,35 +8,26 @@
 
 #import "PHSessionView.h"
 
-@implementation PHSessionView {
-    NSArray * buttons;
-}
-
-- (void)layoutSubviews
-{
-    [super layoutSubviews];
-    _label.frame = CGRectMake(0, 0, self.frame.size.width, kHeaderTitleHeight);
-}
-
-#pragma mark - helper
-
-- (UIButton*)buttonAtIndex:(NSInteger)index
-{
-    if (index < buttons.count) {
-        return buttons[index];
-    }
-    return nil;
-}
+@implementation PHSessionView
 
 #pragma mark - property
 
 - (UILabel*)label
 {
     if (!_label) {
-        _label = [[UILabel alloc] initWithFrame:CGRectZero];
+        _label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, kHeaderTitleHeight)];
         [self addSubview:_label];
     }
     return _label;
+}
+
+- (UIView*)containView
+{
+    if (!_containView) {
+        _containView = [[UIView alloc] initWithFrame:CGRectMake(0, kHeaderTitleHeight, self.frame.size.width, self.frame.size.height - kHeaderTitleHeight)];
+        [self addSubview:_containView];
+    }
+    return _containView;
 }
 
 #pragma mark - clean up
@@ -45,6 +36,8 @@
 {
     [_label removeFromSuperview];
     _label = nil;
+    [_containView removeFromSuperview];
+    _containView = nil;
 }
 
 @end

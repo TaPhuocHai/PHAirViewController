@@ -19,7 +19,7 @@
 
 - (NSInteger)numberOfSession
 {
-    return 1;
+    return 3;
 }
 
 - (NSInteger)numberOfRowsInSession:(NSInteger)sesion
@@ -27,14 +27,14 @@
     return 1;
 }
 
-- (NSString*)segueForRowAtIndexPath:(NSIndexPath*)indexPath
-{
-    return @"";
-}
-
 - (NSString*)titleForRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    return nil;
+    return [NSString stringWithFormat:@"Row %ld in %d", (long)indexPath.row, indexPath.section];
+}
+
+- (NSString*)titleForHeaderAtSession:(NSInteger)session
+{
+    return [NSString stringWithFormat:@"Session %ld", (long)session];
 }
 
 @end
