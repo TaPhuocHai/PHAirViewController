@@ -13,6 +13,10 @@
 #define kMenuItemHeight 50
 #define kSessionWidth   220
 
+#define kDegreesRotate  -40
+#define kTranslateY     -20
+#define kTranslateZ     -300
+
 CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
 CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 
@@ -420,8 +424,8 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
     [UIView animateWithDuration:0.2 delay:0.0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         CATransform3D transform = _airImageView.layer.transform;
-        transform = CATransform3DRotate(transform, DegreesToRadians(-60), 0, 1, 0);
-        transform = CATransform3DTranslate(transform, _airImageView.width/3, 0, -60);
+        transform = CATransform3DRotate(transform, DegreesToRadians(kDegreesRotate), 0, 1, 0);
+        transform = CATransform3DTranslate(transform, _airImageView.width/3, kTranslateY, kTranslateZ);
         _airImageView.layer.transform = transform;
     } completion:^(BOOL finished) {
     }];
