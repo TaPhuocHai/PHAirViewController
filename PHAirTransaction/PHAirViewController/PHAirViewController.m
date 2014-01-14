@@ -11,8 +11,9 @@
 #define kMenuItemHeight 50
 #define kSessionWidth   220
 
-@interface PHAirViewController ()
+static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
+@interface PHAirViewController ()
 @end
 
 @implementation PHAirViewController {
@@ -40,23 +41,54 @@
     [super viewDidLoad];
     self.edgesForExtendedLayout = NO;
     
-    // Init pan
-    panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_handleRevealGesture:)];
-    panGestureRecognizer.delegate = self;
-    [self.view addGestureRecognizer:panGestureRecognizer];
-    
     // Init sessionViews
     sessionViews = [NSMutableDictionary dictionary];
     currentIndexSession = 0;
     
     self.delegate = self;
+    
+    // contentView
+    [self.view addSubview:self.contentView];
+    
+    // root view controller
+    if ( self.storyboard) {
+        @try {
+            [self performSegueWithIdentifier:PHSegueRootIdentifier sender:nil];
+        }
+        @catch(NSException *exception) {}
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
     // layout menu
     [self reloadData];
+}
+
+#pragma mark storyboard support
+
+- (void)prepareForSegue:(PHAirViewControllerSegue *)segue sender:(id)sender
+{
+    NSString *identifier = segue.identifier;
+    if ( [segue isKindOfClass:[PHAirViewControllerSegue class]] && sender == nil )
+    {
+        if ( [identifier isEqualToString:PHSegueRootIdentifier] )
+        {
+            segue.performBlock = ^(PHAirViewControllerSegue* rvc_segue, UIViewController* svc, UIViewController* dvc)
+            {
+                [self addChildViewController:dvc];
+                
+                UIView * controllerView = dvc.view;
+                controllerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+                controllerView.frame = self.view.bounds;
+                [self.view addSubview:controllerView];
+
+                [dvc didMoveToParentViewController:self];
+            };
+        }
+    }
 }
 
 #pragma mark - Gesture Delegate
@@ -308,7 +340,6 @@
     if (!_contentView) {
         _contentView = [[UIView alloc] initWithFrame:CGRectMake(0, -(self.view.height - kHeaderTitleHeight), kSessionWidth, (self.view.height - kHeaderTitleHeight)*3)];
         _contentView.backgroundColor = [UIColor redColor];
-        [self.view addSubview:_contentView];
     }
     return _contentView;
 }
@@ -325,7 +356,12 @@
 
 - (void)toggleAirOnViewController:(UIViewController*)controller
 {
-    
+    if (!panGestureRecognizer) {
+        // Init pan
+        panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_handleRevealGesture:)];
+        panGestureRecognizer.delegate = self;
+        [self.view addGestureRecognizer:panGestureRecognizer];
+    }
 }
 
 #pragma mark - Clean up
@@ -338,6 +374,39 @@
     _contentView = nil;
     
     rowsOfSession = nil;
+}
+
+@end
+
+
+#pragma mark - UIViewController(PHAirViewController) Category
+
+@implementation UIViewController(PHAirViewController)
+
+- (PHAirViewController*)airViewController
+{
+    UIViewController *parent = self;
+    Class revealClass = [PHAirViewController class];
+    
+    while ( nil != (parent = [parent parentViewController]) && ![parent isKindOfClass:revealClass] )
+    {
+    }
+    return (id)parent;
+}
+
+@end
+
+
+#pragma mark - PHAirViewControllerSegue Class
+
+@implementation PHAirViewControllerSegue
+
+- (void)perform
+{
+    if ( _performBlock != nil )
+    {
+        _performBlock( self, self.sourceViewController, self.destinationViewController );
+    }
 }
 
 @end

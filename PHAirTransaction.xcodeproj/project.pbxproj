@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4876ECA81885595600F5A448 /* SKBounceAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4876ECA71885595600F5A448 /* SKBounceAnimation.m */; };
+		4876ECB018857C4800F5A448 /* PHView1ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4876ECAF18857C4800F5A448 /* PHView1ViewController.m */; };
 		489B29CF18841E090041992A /* UIViewAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 489B29CE18841E090041992A /* UIViewAdditions.m */; };
 		48C95288187C2601004D3BEB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48C95287187C2601004D3BEB /* Foundation.framework */; };
 		48C9528A187C2601004D3BEB /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48C95289187C2601004D3BEB /* CoreGraphics.framework */; };
@@ -41,6 +42,8 @@
 /* Begin PBXFileReference section */
 		4876ECA61885595600F5A448 /* SKBounceAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKBounceAnimation.h; sourceTree = "<group>"; };
 		4876ECA71885595600F5A448 /* SKBounceAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKBounceAnimation.m; sourceTree = "<group>"; };
+		4876ECAE18857C4800F5A448 /* PHView1ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PHView1ViewController.h; path = PHAirViewController/PHView1ViewController.h; sourceTree = "<group>"; };
+		4876ECAF18857C4800F5A448 /* PHView1ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PHView1ViewController.m; path = PHAirViewController/PHView1ViewController.m; sourceTree = "<group>"; };
 		489B29CD18841E090041992A /* UIViewAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIViewAdditions.h; sourceTree = "<group>"; };
 		489B29CE18841E090041992A /* UIViewAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIViewAdditions.m; sourceTree = "<group>"; };
 		48C95284187C2601004D3BEB /* PHAirTransaction.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PHAirTransaction.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -154,6 +157,8 @@
 				48C95297187C2601004D3BEB /* PHAppDelegate.m */,
 				48E90C8C187C2C61007EA7E4 /* PHMenuViewController.h */,
 				48E90C8D187C2C61007EA7E4 /* PHMenuViewController.m */,
+				4876ECAE18857C4800F5A448 /* PHView1ViewController.h */,
+				4876ECAF18857C4800F5A448 /* PHView1ViewController.m */,
 				48E90C80187C2639007EA7E4 /* Main.storyboard */,
 				48C95299187C2601004D3BEB /* Images.xcassets */,
 				48C9528E187C2601004D3BEB /* Supporting Files */,
@@ -307,6 +312,7 @@
 				48E90C8B187C28DB007EA7E4 /* PHMenuItemView.m in Sources */,
 				48E90C88187C27EF007EA7E4 /* PHSessionView.m in Sources */,
 				48C95294187C2601004D3BEB /* main.m in Sources */,
+				4876ECB018857C4800F5A448 /* PHView1ViewController.m in Sources */,
 				48E90C85187C278F007EA7E4 /* PHAirViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
