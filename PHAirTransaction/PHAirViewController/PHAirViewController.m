@@ -24,7 +24,12 @@ CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 @interface PHAirViewController()
-@property (nonatomic, strong) UIView * contentImageView;
+
+@property (nonatomic, strong) UIView      * contentImageView;
+@property (nonatomic, strong) NSString    * lastSegue;
+@property (nonatomic, strong) NSIndexPath * lastIndexPath;
+@property (nonatomic, strong) UIViewController * lastViewController;
+
 @end
 
 @implementation PHAirViewController {
@@ -72,9 +77,16 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     if ( self.storyboard) {
         @try {
             [self performSegueWithIdentifier:PHSegueRootIdentifier sender:nil];
+            self.lastSegue = PHSegueRootIdentifier;
         }
         @catch(NSException *exception) {}
     }
+    
+    // Init tap on contentView
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                           action:@selector(contentViewDidTap:)];
+    self.airImageView.backgroundColor = [UIColor greenColor];
+    [self.airImageView addGestureRecognizer:tap];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -109,6 +121,15 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
             
             [dvc didMoveToParentViewController:self];
         };
+    }
+}
+
+#pragma mark - ContentView
+
+- (void)contentViewDidTap:(UITapGestureRecognizer *)recognizer
+{
+    if (_airImageView.tag == 1) {
+        [self showAirView];
     }
 }
 
@@ -339,6 +360,8 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 - (NSInteger)numberOfRowsInSession:(NSInteger)sesion { return  0; }
 
+- (NSString*)titleForHeaderAtSession:(NSInteger)session { return @""; }
+
 - (NSString*)titleForRowAtIndexPath:(NSIndexPath*)indexPath { return @""; }
 
 - (UIImage*)thumbnailImageAtIndexPath:(NSIndexPath*)indexPath { return nil; }
@@ -373,6 +396,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 {
     if (!_airImageView) {
         _airImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height)];
+        _airImageView.userInteractionEnabled = YES;
     }
     return _airImageView;
 }
@@ -381,6 +405,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 {
     if (!_contentImageView) {
         _contentImageView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height)];
+        _contentImageView.userInteractionEnabled = YES;
     }
     return _contentImageView;
 }
@@ -393,7 +418,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
         // Init pan
         panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_handleRevealGesture:)];
         panGestureRecognizer.delegate = self;
-        [self.view addGestureRecognizer:panGestureRecognizer];
+        [self.contentView addGestureRecognizer:panGestureRecognizer];
     }
     
     // Create Image
@@ -404,7 +429,8 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
         _airImageView.image = [self imageWithView:controller.view];
     }
     _airImageView.alpha = 1;
-    [self.view bringSubviewToFront:_airImageView];
+    [self.view bringSubviewToFront:self.contentImageView];
+    [self.view bringSubviewToFront:self.contentView];
     
     // Remove font view controller
     if (controller) {
@@ -440,6 +466,33 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
         _airImageView.layer.transform = transform;
     } completion:^(BOOL finished) {
     }];
+    
+    _airImageView.tag = 1;
+}
+
+#pragma mark - animation
+
+- (void)showAirView
+{
+    // Setup animation
+    [UIView animateWithDuration:kAnimationDuraction
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseInOut
+                     animations:^
+     {
+         CATransform3D transform = _airImageView.layer.transform;
+         transform = CATransform3DTranslate(transform,- _airImageView.width/3, -kTranslateY, -kTranslateZ);
+         transform = CATransform3DRotate(transform, -DegreesToRadians(kDegreesRotate), 0, 1, 0);
+         transform = CATransform3DTranslate(transform,-19,0,-15);
+         _airImageView.layer.transform = transform;
+     } completion:^(BOOL finished) {
+         _airImageView.alpha = 0;
+         if (self.lastSegue.length) {
+             [self performSegueWithIdentifier:self.lastSegue sender:nil];
+         }
+     }];
+    
+    _airImageView.tag = 0;
 }
 
 #pragma mark - helper
