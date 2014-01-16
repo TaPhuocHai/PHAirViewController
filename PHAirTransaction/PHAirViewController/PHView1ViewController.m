@@ -23,7 +23,7 @@
 
 - (void)leftButtonTouch
 {
-    [self.airViewController toggleAirOnViewController:self];
+    [self.airViewController showAirViewFromViewController:self];
 }
 
 @end

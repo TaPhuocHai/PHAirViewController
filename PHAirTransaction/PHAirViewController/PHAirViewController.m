@@ -18,6 +18,10 @@
 #define kTranslateZ     -300
 #define kAnimationDuraction 0.3f
 
+#define kDegressRotateToOut  -50
+#define kTranslateYToOut     -20
+#define kTranslateZToOut     -300
+
 CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
 CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 
@@ -83,8 +87,8 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     }
     
     // Init tap on contentView
-    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                           action:@selector(contentViewDidTap:)];
+    UIPanGestureRecognizer * tap = [[UIPanGestureRecognizer alloc] initWithTarget:self
+                                                                           action:@selector(handleRevealGestureOnAirImageView:)];
     self.airImageView.backgroundColor = [UIColor greenColor];
     [self.airImageView addGestureRecognizer:tap];
 }
@@ -129,7 +133,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 - (void)contentViewDidTap:(UITapGestureRecognizer *)recognizer
 {
     if (_airImageView.tag == 1) {
-        [self showAirView];
+        [self hideAirView];
     }
 }
 
@@ -140,6 +144,29 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     // only allow gesture if no previous request is in process
     return ( gestureRecognizer == panGestureRecognizer && !isAnimation) ;
 }
+
+#pragma mark - AirImageView gesture
+
+- (void)handleRevealGestureOnAirImageView:(UIPanGestureRecognizer *)recognizer
+{
+    switch ( recognizer.state )
+    {
+        case UIGestureRecognizerStateBegan:
+            break;
+            
+        case UIGestureRecognizerStateChanged:
+            break;
+            
+        case UIGestureRecognizerStateEnded:
+            break;
+            
+        case UIGestureRecognizerStateCancelled:
+            break;
+        default:
+            break;
+    }
+}
+
 
 #pragma mark - Gesture Based Reveal
 
@@ -175,6 +202,18 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 {
     CGFloat translation = [recognizer translationInView:_contentView].y;
     self.contentView.top = -(self.view.height - kHeaderTitleHeight) + translation;
+    
+    // Vị trí y của contentView khi ở chế độ bình thường
+    int firstTop = - (self.view.height - kHeaderTitleHeight);
+    // Vị trí y hiện tại của contentView khi scroll
+    int afterTop = self.contentView.top;
+    // Nếu là kéo xuống
+    if (afterTop - firstTop > 0) {
+    }
+    // Nếu là kéo lên
+    else {
+        
+    }
 }
 
 - (void)_handleRevealGestureStateEndedWithRecognizer:(UIPanGestureRecognizer *)recognizer
@@ -183,24 +222,31 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
         return;
     }
     
+    // Vị trí y của contentView khi ở chế độ bình thường
     int firstTop = - (self.view.height - kHeaderTitleHeight);
+    // Vị trí y hiện tại của contentView khi scroll
     int afterTop = self.contentView.top;
     
+    // Nếu là kéo xuống
     if (afterTop - firstTop > 0) {
         if (afterTop - firstTop > self.view.height/2) {
+            // Đã kéo đủ một chiều cao cần thiết
+            // Run animation down to next
             [self prevSession];
-            NSLog(@"animation down to next");
         } else {
+            // Chưa kéo đủ một chiều cao cần thiết
+            // Run animation up with current
             [self slideCurrentSession];
-            NSLog(@"animation up with current");
         }
-    } else {
+    }
+    // Nếu là kéo lên
+    else {
         if (firstTop - afterTop > self.view.height/2) {
+            // Run animation up to next
             [self nextSession];
-            NSLog(@"animation up to next");
         }  else {
+            // Run animation down with current
             [self slideCurrentSession];
-            NSLog(@"animation down with current");
         }
     }
 }
@@ -208,6 +254,8 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 - (void)_handleRevealGestureStateCancelledWithRecognizer:(UIPanGestureRecognizer *)recognizer
 {
 }
+
+#pragma mark -
 
 - (void)nextSession
 {
@@ -375,7 +423,6 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
                                                                                     inSection:button.superview.tag]];
         if (segue.length) {
             // Show  animation
-            
             [self performSegueWithIdentifier:segue sender:nil];
         }
     }
@@ -412,16 +459,16 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 #pragma mark - Show/Hide air view controller
 
-- (void)toggleAirOnViewController:(UIViewController*)controller
+- (void)showAirViewFromViewController:(UIViewController*)controller
 {
+    // Khởi tạo panGestureRecognizer để scroll các session
     if (!panGestureRecognizer) {
-        // Init pan
         panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_handleRevealGesture:)];
         panGestureRecognizer.delegate = self;
         [self.contentView addGestureRecognizer:panGestureRecognizer];
     }
     
-    // Create Image
+    // Create Image for airImageView
     if (controller.navigationController) {
         _airImageView.image = [self imageWithView:controller.navigationController.view];
         [controller.navigationController setNavigationBarHidden:YES animated:NO];
@@ -439,22 +486,9 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     }
     
     // Setup animation
-    CATransform3D rotationAndPerspectiveTransform = CATransform3DIdentity;
-    rotationAndPerspectiveTransform.m34 = 1.0 / -600;
-    self.contentImageView.layer.sublayerTransform = rotationAndPerspectiveTransform;
-    
-    CGPoint anchorPoint = CGPointMake(1, 0.5);
-    
-    [CATransaction begin];
-    [CATransaction setDisableActions:YES];
-     CATransform3D currentTransform = _airImageView.layer.transform;
-    _airImageView.layer.anchorPoint = anchorPoint;
-    CGFloat newX = _airImageView.width * anchorPoint.x;
-    CGFloat newY = _airImageView.height * anchorPoint.y;
-    _airImageView.layer.position = CGPointMake(newX, newY);
-    _airImageView.layer.transform = currentTransform;
-    [CATransaction commit];
+    [self prepareForAnimation];
 
+    // Run animatin to show airView
     [UIView animateWithDuration:kAnimationDuraction
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseInOut
@@ -470,9 +504,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     _airImageView.tag = 1;
 }
 
-#pragma mark - animation
-
-- (void)showAirView
+- (void)hideAirView
 {
     // Setup animation
     [UIView animateWithDuration:kAnimationDuraction
@@ -493,6 +525,27 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
      }];
     
     _airImageView.tag = 0;
+}
+
+#pragma mark - animation
+
+- (void)prepareForAnimation
+{
+    CATransform3D rotationAndPerspectiveTransform = CATransform3DIdentity;
+    rotationAndPerspectiveTransform.m34 = 1.0 / -600;
+    self.contentImageView.layer.sublayerTransform = rotationAndPerspectiveTransform;
+    
+    CGPoint anchorPoint = CGPointMake(1, 0.5);
+    
+    [CATransaction begin];
+    [CATransaction setDisableActions:YES];
+    CATransform3D currentTransform = _airImageView.layer.transform;
+    _airImageView.layer.anchorPoint = anchorPoint;
+    CGFloat newX = _airImageView.width * anchorPoint.x;
+    CGFloat newY = _airImageView.height * anchorPoint.y;
+    _airImageView.layer.position = CGPointMake(newX, newY);
+    _airImageView.layer.transform = currentTransform;
+    [CATransaction commit];
 }
 
 #pragma mark - helper
