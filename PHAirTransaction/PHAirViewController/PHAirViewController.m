@@ -564,7 +564,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 - (void)showAirViewFromViewController:(UIViewController*)controller
 {
-    // Khởi tạo panGestureRecognizer để scroll các session
+    // Init panGestureRecognizer for scroll on sessionViews
     if (!panGestureRecognizer) {
         panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_handleRevealGesture:)];
         panGestureRecognizer.delegate = self;
@@ -684,9 +684,11 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     self.leftView.layer.anchorPoint = leftAnchorPoint;
     
     // Setup contentView to transform
-//    CATransform3D rotationAndPerspectiveTransform3 = CATransform3DIdentity;
-//    rotationAndPerspectiveTransform3.m34 = 1.0 / -600;
-//    self.wrapperView.layer.sublayerTransform = rotationAndPerspectiveTransform3;
+    /*
+    CATransform3D rotationAndPerspectiveTransform3 = CATransform3DIdentity;
+    rotationAndPerspectiveTransform3.m34 = 1.0 / -600;
+    self.wrapperView.layer.sublayerTransform = rotationAndPerspectiveTransform3;
+     */
     
     CGPoint anchorPoint3 = CGPointMake(1, 0.5);
     CGFloat newX3 = self.contentView.width * anchorPoint3.x;
@@ -712,8 +714,16 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 {
     [_airImageView removeFromSuperview];
     _airImageView = nil;
+    [_rightView removeFromSuperview];
+    _rightView = nil;
+    
+    [_leftView removeFromSuperview];
+    _leftView = nil;
+    
     [_contentView removeFromSuperview];
     _contentView = nil;
+    [_wrapperView removeFromSuperview];
+    _wrapperView = nil;
     
     rowsOfSession = nil;
 }
