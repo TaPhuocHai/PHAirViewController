@@ -6,6 +6,28 @@
 //  Copyright (c) 2014 Phuoc Hai. All rights reserved.
 //
 
+/*
+ Cấu trúc view
+ -----------------
+ view
+   ---------------
+   wrapperView
+     ---------------
+     contentView
+       -------------
+       leftView
+         -----------
+         sessionView
+           ---------
+           title
+           ---------
+           button
+       -------------
+       rightView
+         ---------
+         airImageView
+ */
+
 #import "PHAirViewController.h"
 
 #import <QuartzCore/QuartzCore.h>
@@ -13,14 +35,13 @@
 #define kMenuItemHeight 50
 #define kSessionWidth   220
 
-#define kDegreesRotate  -40.0f
-#define kTranslateY     -20.0f
-#define kTranslateZ     -300.0f
-#define kAnimationDuraction 0.3f
+#define kLeftViewTransX      -50
+#define kLeftViewRotate      -5
+#define kAirImageViewRotate  -25
+#define kRightViewTransX     180
+#define kRightViewTransZ     -150
 
-#define kDegressRotateToOut  -54.0f
-#define kTranslateYToOut     -20.0f
-#define kTranslateZToOut     -300.0f
+#define kAirImageViewRotateMax -42
 
 CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
 CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
@@ -29,7 +50,12 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 @interface PHAirViewController()
 
-@property (nonatomic, strong) UIView      * contentImageView;
+@property (nonatomic, strong) UIView      * wrapperView;
+@property (nonatomic, strong) UIView      * contentView;
+@property (nonatomic, strong) UIView      * leftView;
+@property (nonatomic, strong) UIView      * rightView;
+@property (nonatomic, strong) UIImageView * airImageView;
+
 @property (nonatomic, strong) NSString    * lastSegue;
 @property (nonatomic, strong) NSIndexPath * lastIndexPath;
 @property (nonatomic, strong) UIViewController * lastViewController;
@@ -73,11 +99,15 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     self.delegate = self;
     
     // Init contentView
-    [self.view addSubview:self.contentView];
+    [self.view addSubview:self.wrapperView];
+    [self.wrapperView addSubview:self.contentView];
+    
+    // Init left/rightView
+    [self.contentView addSubview:self.leftView];
+    [self.contentView addSubview:self.rightView];
     
     // Init airImageView
-    [self.view addSubview:self.contentImageView];
-    [self.contentImageView addSubview:self.airImageView];
+    [self.rightView addSubview:self.airImageView];
     self.airImageView.alpha = 0;
     
     // Init root view controller
@@ -90,7 +120,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     }
     
     // Init tap on contentView
-    UIPanGestureRecognizer * tap = [[UIPanGestureRecognizer alloc] initWithTarget:self
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                            action:@selector(handleRevealGestureOnAirImageView:)];
     self.airImageView.backgroundColor = [UIColor greenColor];
     [self.airImageView addGestureRecognizer:tap];
@@ -153,8 +183,9 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 #pragma mark - AirImageView gesture
 
-- (void)handleRevealGestureOnAirImageView:(UIPanGestureRecognizer *)recognizer
+- (void)handleRevealGestureOnAirImageView:(UITapGestureRecognizer *)recognizer
 {
+    [self hideAirView];
     switch ( recognizer.state )
     {
         case UIGestureRecognizerStateBegan:
@@ -206,13 +237,13 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 - (void)_handleRevealGestureStateChangedWithRecognizer:(UIPanGestureRecognizer *)recognizer
 {
-    CGFloat translation = [recognizer translationInView:_contentView].y;
-    self.contentView.top = -(self.view.height - kHeaderTitleHeight) + translation;
+    CGFloat translation = [recognizer translationInView:self.leftView].y;
+    self.leftView.top = -(self.view.height - kHeaderTitleHeight) + translation;
     
     // Vị trí y của contentView khi ở chế độ bình thường
     int firstTop = - (self.view.height - kHeaderTitleHeight);
     // Vị trí y hiện tại của contentView khi scroll
-    int afterTop = self.contentView.top;
+    int afterTop = self.leftView.top;
     
     // Điểm center bình thường của contentView : self.view.height/2
     // Khi scroll lên và scroll xuống thì độ chênh lệch của contentView là self.view.height/2
@@ -221,7 +252,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     int distanceScroll = 0;
     // Nếu là kéo xuống
     if (afterTop - firstTop > 0) {
-        int topMiddleSessionView = self.contentView.top + sessionViewHeight;
+        int topMiddleSessionView = self.leftView.top + sessionViewHeight;
         // Nếu điểm top của middleSession trên contentView nằm phía trên của giữa màn hình (theo trục y)
         if (topMiddleSessionView < self.view.height/2) {
             distanceScroll = self.view.height/2 - topMiddleSessionView;
@@ -233,7 +264,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     }
     // Nếu là kéo lên
     else {
-        int bottomMiddleSessionView = self.contentView.top + sessionViewHeight*2;
+        int bottomMiddleSessionView = self.leftView.top + sessionViewHeight*2;
         if (bottomMiddleSessionView > self.view.height/2) {
             distanceScroll = bottomMiddleSessionView - self.view.height/2;
         } else {
@@ -247,18 +278,14 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     // 0 tương ứng 0
     // distanceScroll ---> ?
     // max : self.view.height/2 tương ứng với abs(kDegressRotateToOut - kDegreesRotate)
-    float rotateDegress = (distanceScroll * abs(kDegressRotateToOut - kDegreesRotate))/(self.view.height/2);
+    float rotateDegress = (distanceScroll * abs(kAirImageViewRotateMax - kAirImageViewRotate))/(self.view.height/2);
     self.lastDeegreesRotateTransform = rotateDegress;
     
-    NSLog(@"last de = %f",self.lastDeegreesRotateTransform);
-    
-    [self resetIdentityTransform];
-    [self rotateWithDegrees:(kDegreesRotate - rotateDegress)
-              andTranslateX: _airImageView.width/3
-                 translateY:kTranslateY
-                 translateZ:kTranslateZ
-                  duraction:0
-                   complete:nil];
+    // Rotate airImageView
+    self.airImageView.layer.transform = CATransform3DIdentity;
+    CATransform3D airImageRotate = self.airImageView.layer.transform;
+    airImageRotate = CATransform3DRotate(airImageRotate, DegreesToRadians(kAirImageViewRotate - rotateDegress), 0, 1, 0);
+    self.airImageView.layer.transform = airImageRotate;
 }
 
 - (void)_handleRevealGestureStateEndedWithRecognizer:(UIPanGestureRecognizer *)recognizer
@@ -270,7 +297,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     // Vị trí y của contentView khi ở chế độ bình thường
     int firstTop = - (self.view.height - kHeaderTitleHeight);
     // Vị trí y hiện tại của contentView khi scroll
-    int afterTop = self.contentView.top;
+    int afterTop = self.leftView.top;
     
     // Nếu là kéo xuống
     if (afterTop - firstTop > 0) {
@@ -309,14 +336,14 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^
     {
-        self.contentView.top = -(self.contentView.height/3)*2;
+        self.leftView.top = -(self.leftView.height/3)*2;
     } completion:^(BOOL finished) {
         currentIndexSession ++;
         if (currentIndexSession >= sessionViews.count) {
             currentIndexSession = 0;
         }
         [self layoutContaintView];
-        self.contentView.top = -self.contentView.height/3;
+        self.leftView.top = -self.leftView.height/3;
     }];
     [self rotateAirImage];
 }
@@ -328,14 +355,14 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^
      {
-         self.contentView.top = 0;
+         self.leftView.top = 0;
      } completion:^(BOOL finished) {
          currentIndexSession --;
          if (currentIndexSession < 0) {
              currentIndexSession = sessionViews.count - 1;
          }
          [self layoutContaintView];
-         self.contentView.top = -self.contentView.height/3;
+         self.leftView.top = -self.leftView.height/3;
      }];
     [self rotateAirImage];
 }
@@ -347,7 +374,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^
      {
-         self.contentView.top = -self.contentView.height/3;
+         self.leftView.top = -self.leftView.height/3;
      } completion:^(BOOL finished) {
      }];
     [self rotateAirImage];
@@ -355,16 +382,11 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 - (void)rotateAirImage
 {
-    [self rotateWithDegrees:self.lastDeegreesRotateTransform*2
-              andTranslateX:0 translateY:0 translateZ:0 duraction:0.2 complete:^{
-                  [self resetIdentityTransform];
-                  [self rotateWithDegrees:kDegreesRotate
-                            andTranslateX: _airImageView.width/3
-                               translateY:kTranslateY
-                               translateZ:kTranslateZ
-                                duraction:0
-                                 complete:nil];
-              }];
+    [UIView animateWithDuration:0.2 animations:^{
+        CATransform3D airImageRotate = self.airImageView.layer.transform;
+        airImageRotate = CATransform3DRotate(airImageRotate, DegreesToRadians(self.lastDeegreesRotateTransform), 0, 1, 0);
+        self.airImageView.layer.transform = airImageRotate;
+    }];
 }
 
 #pragma mark - layout menu
@@ -459,9 +481,9 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     if (bottomSession.superview) [bottomSession removeFromSuperview];
     
     // Add top/middle/bottom to content view
-    [self.contentView addSubview:topSession];
-    [self.contentView addSubview:middleSession];
-    [self.contentView addSubview:bottomSession];
+    [self.leftView addSubview:topSession];
+    [self.leftView addSubview:middleSession];
+    [self.leftView addSubview:bottomSession];
 }
 
 #pragma mark - PHAirMenuDelegate
@@ -493,15 +515,23 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 #pragma mark - property
 
+- (UIView*)wrapperView
+{
+    if (!_wrapperView) {
+        _wrapperView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width,self.view.height)];
+    }
+    return _wrapperView;
+}
+
 - (UIView*)contentView
 {
     if (!_contentView) {
-        _contentView = [[UIView alloc] initWithFrame:CGRectMake(0, -(self.view.height - kHeaderTitleHeight), kSessionWidth, (self.view.height - kHeaderTitleHeight)*3)];
+        _contentView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width,self.view.height)];
     }
     return _contentView;
 }
 
-- (UIView*)airImageView
+- (UIImageView*)airImageView
 {
     if (!_airImageView) {
         _airImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height)];
@@ -510,14 +540,25 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     return _airImageView;
 }
 
-- (UIView*)contentImageView
+- (UIView*)leftView
 {
-    if (!_contentImageView) {
-        _contentImageView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height)];
-        _contentImageView.userInteractionEnabled = YES;
+    if (!_leftView) {
+        // leftView content sessionView
+        _leftView = [[UIView alloc] initWithFrame:CGRectMake(0, -(self.view.height - kHeaderTitleHeight), kSessionWidth, (self.view.height - kHeaderTitleHeight)*3)];
+        _leftView.userInteractionEnabled = YES;
     }
-    return _contentImageView;
+    return _leftView;
 }
+
+- (UIView*)rightView
+{
+    if (!_rightView) {
+        _rightView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height)];
+        _rightView.userInteractionEnabled = YES;
+    }
+    return _rightView;
+}
+
 
 #pragma mark - Show/Hide air view controller
 
@@ -527,7 +568,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     if (!panGestureRecognizer) {
         panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_handleRevealGesture:)];
         panGestureRecognizer.delegate = self;
-        [self.contentView addGestureRecognizer:panGestureRecognizer];
+        [self.leftView addGestureRecognizer:panGestureRecognizer];
     }
     
     // Create Image for airImageView
@@ -538,8 +579,11 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
         _airImageView.image = [self imageWithView:controller.view];
     }
     _airImageView.alpha = 1;
-    [self.view bringSubviewToFront:self.contentImageView];
-    [self.view bringSubviewToFront:self.contentView];
+    
+    // Fix for touch and pan
+    [self.view bringSubviewToFront:self.wrapperView];
+    [self.contentView bringSubviewToFront:self.leftView];
+    [self.contentView bringSubviewToFront:self.rightView];
     
     // Remove font view controller
     if (controller) {
@@ -547,33 +591,57 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
         [controller.view removeFromSuperview];
     }
     
-    // Setup animation
-    [self resetIdentityTransform];
-
-    // Run animatin to show airView
-    [self rotateWithDegrees:kDegreesRotate
-              andTranslateX: _airImageView.width/3
-                 translateY:kTranslateY
-                 translateZ:kTranslateZ
-                  duraction:kAnimationDuraction
-                   complete:nil];
+    // set identity transform
+    self.airImageView.layer.transform = CATransform3DIdentity;
+    self.contentView.layer.transform  = CATransform3DIdentity;
+    
+    CATransform3D leftTransform = self.leftView.layer.transform;
+    leftTransform = CATransform3DTranslate(leftTransform, kLeftViewTransX , 0, 0);
+    leftTransform = CATransform3DRotate(leftTransform, DegreesToRadians(kLeftViewRotate), 0, 1, 0);
+    self.leftView.layer.transform = leftTransform;
+    
+    [UIView animateWithDuration:3
+                          delay:0.0
+                        options:UIViewAnimationOptionCurveEaseInOut
+                     animations:^
+     {
+         CATransform3D airImageRotate = self.airImageView.layer.transform;
+         airImageRotate = CATransform3DRotate(airImageRotate, DegreesToRadians(kAirImageViewRotate), 0, 1, 0);
+         self.airImageView.layer.transform = airImageRotate;
+         
+         CATransform3D rightTransform = self.rightView.layer.transform;
+         rightTransform = CATransform3DTranslate(rightTransform, kRightViewTransX, 0, kRightViewTransZ);
+         self.rightView.layer.transform = rightTransform;
+         
+         CATransform3D leftTransform = self.leftView.layer.transform;
+         leftTransform = CATransform3DRotate(leftTransform, DegreesToRadians(-kLeftViewRotate), 0, 1, 0);
+         leftTransform = CATransform3DTranslate(leftTransform, -kLeftViewTransX , 0, 0);
+         self.leftView.layer.transform = leftTransform;
+     } completion:^(BOOL finished) {
+     }];
     
     _airImageView.tag = 1;
 }
 
 - (void)hideAirView
 {
-    // Setup animation
-    [UIView animateWithDuration:kAnimationDuraction
+    [UIView animateWithDuration:3
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^
      {
-         CATransform3D transform = _airImageView.layer.transform;
-         transform = CATransform3DTranslate(transform,- _airImageView.width/3, -kTranslateY, -kTranslateZ);
-         transform = CATransform3DRotate(transform, -DegreesToRadians(kDegreesRotate), 0, 1, 0);
-         transform = CATransform3DTranslate(transform,-19,0,-15);
-         _airImageView.layer.transform = transform;
+         CATransform3D airImageRotate = self.airImageView.layer.transform;
+         airImageRotate = CATransform3DRotate(airImageRotate, DegreesToRadians(-kAirImageViewRotate), 0, 1, 0);
+         self.airImageView.layer.transform = airImageRotate;
+         
+         CATransform3D rightTransform = self.rightView.layer.transform;
+         rightTransform = CATransform3DTranslate(rightTransform, -kRightViewTransX, 0, -kRightViewTransZ);
+         self.rightView.layer.transform = rightTransform;
+         
+         CATransform3D leftTransform = self.leftView.layer.transform;
+         leftTransform = CATransform3DRotate(leftTransform, DegreesToRadians(kLeftViewRotate), 0, 1, 0);
+         leftTransform = CATransform3DTranslate(leftTransform, kLeftViewTransX , 0, 0);
+         self.leftView.layer.transform = leftTransform;
      } completion:^(BOOL finished) {
          _airImageView.alpha = 0;
          if (self.lastSegue.length) {
@@ -588,54 +656,43 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 - (void)setupAnimation
 {
-    // Save nomal transform
-    self.airNomalTransform = _airImageView.layer.transform;
-    
-    // Setup syblayerTransform
+    // Setup airImageView to transform
     CATransform3D rotationAndPerspectiveTransform = CATransform3DIdentity;
     rotationAndPerspectiveTransform.m34 = 1.0 / -600;
-    self.contentImageView.layer.sublayerTransform = rotationAndPerspectiveTransform;
-    
-    // AnchorPoint and nomal pos
-    CGPoint anchorPoint = CGPointMake(1.5, 0.5);
+    self.rightView.layer.sublayerTransform = rotationAndPerspectiveTransform;
+    CGPoint anchorPoint = CGPointMake(1, 0.5);
     CGFloat newX = _airImageView.width * anchorPoint.x;
     CGFloat newY = _airImageView.height * anchorPoint.y;
     _airImageView.layer.position = CGPointMake(newX, newY);
     _airImageView.layer.anchorPoint = anchorPoint;
-}
-
-- (void)resetIdentityTransform
-{
-    _airImageView.layer.transform = self.airNomalTransform;
-}
-
-- (void)rotateWithDegrees:(float)degrees
-            andTranslateX:(float)x
-               translateY:(float)y
-               translateZ:(float)z
-                duraction:(float)duraction
-                 complete:(void (^)(void))complete
-{
-    if (duraction) {
-        [UIView animateWithDuration:duraction
-                              delay:0.0
-                            options:UIViewAnimationOptionCurveEaseInOut
-                         animations:^
-         {
-             CATransform3D transform = _airImageView.layer.transform;
-             transform = CATransform3DRotate(transform, DegreesToRadians(degrees), 0, 1, 0);
-             //transform = CATransform3DTranslate(transform, x, y, z);
-             _airImageView.layer.transform = transform;
-         } completion:^(BOOL finished) {
-             if (complete) complete();
-         }];
-    } else {
-        CATransform3D transform = _airImageView.layer.transform;
-        transform = CATransform3DRotate(transform, DegreesToRadians(degrees), 0, 1, 0);
-        //transform = CATransform3DTranslate(transform, x, y, z);
-        _airImageView.layer.transform = transform;
-        if (complete) complete();
-    }
+    
+    // Setup rightView to transform
+    CATransform3D rotationAndPerspectiveTransform2 = CATransform3DIdentity;
+    rotationAndPerspectiveTransform2.m34 = 1.0 / -600;
+    self.contentView.layer.sublayerTransform = rotationAndPerspectiveTransform2;
+    CGPoint anchorPoint2 = CGPointMake(1, 0.5);
+    CGFloat newX2 = self.rightView.width * anchorPoint2.x;
+    CGFloat newY2 = self.rightView.height * anchorPoint2.y;
+    self.rightView.layer.position = CGPointMake(newX2, newY2);
+    self.rightView.layer.anchorPoint = anchorPoint2;
+    
+    // Setup leftView to transform
+    CGPoint leftAnchorPoint = CGPointMake(-3, 0.5);
+    CGFloat newLeftX = self.leftView.width * leftAnchorPoint.x;
+    CGFloat newLeftY = self.leftView.height * leftAnchorPoint.y;
+    self.leftView.layer.position = CGPointMake(newLeftX, newLeftY);
+    self.leftView.layer.anchorPoint = leftAnchorPoint;
+    
+    // Setup contentView to transform
+//    CATransform3D rotationAndPerspectiveTransform3 = CATransform3DIdentity;
+//    rotationAndPerspectiveTransform3.m34 = 1.0 / -600;
+//    self.wrapperView.layer.sublayerTransform = rotationAndPerspectiveTransform3;
+    
+    CGPoint anchorPoint3 = CGPointMake(1, 0.5);
+    CGFloat newX3 = self.contentView.width * anchorPoint3.x;
+    CGFloat newY3 = self.contentView.height * anchorPoint3.y;
+    self.contentView.layer.position = CGPointMake(newX3, newY3);
+    self.contentView.layer.anchorPoint = anchorPoint3;
 }
 
 #pragma mark - helper
