@@ -29,7 +29,7 @@
 @property (nonatomic, readonly) UIViewController * fontViewController;
 
 - (void)reloadData;
-- (void)showAirViewFromViewController:(UIViewController*)controller;
+- (void)showAirViewFromViewController:(UIViewController*)controller complete:(void (^)(void))complete;
 
 @end
 

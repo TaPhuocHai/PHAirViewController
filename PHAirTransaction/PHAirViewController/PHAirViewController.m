@@ -7,7 +7,8 @@
 //
 
 /*
- Cấu trúc view
+ view structer
+ 
  -----------------
  view
    ---------------
@@ -43,6 +44,8 @@
 
 #define kAirImageViewRotateMax -42
 
+#define kDuration 0.3
+
 CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
 CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 
@@ -60,7 +63,6 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 @property (nonatomic, strong) NSIndexPath * lastIndexPath;
 @property (nonatomic, strong) UIViewController * lastViewController;
 
-@property (nonatomic)         CATransform3D airNomalTransform;
 @property (nonatomic)         float         lastDeegreesRotateTransform;
 
 @end
@@ -120,10 +122,19 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     }
     
     // Init tap on contentView
-    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+    /*
+    UIPanGestureRecognizer * pan = [[UIPanGestureRecognizer alloc] initWithTarget:self
                                                                            action:@selector(handleRevealGestureOnAirImageView:)];
     self.airImageView.backgroundColor = [UIColor greenColor];
+    [self.airImageView addGestureRecognizer:pan];
+     */
+    UISwipeGestureRecognizer * swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipeOnAirImageView:)];
+    swipe.direction = UISwipeGestureRecognizerDirectionLeft;
+    [self.airImageView addGestureRecognizer:swipe];
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                          action:@selector(handleTapOnAirImageView:)];
     [self.airImageView addGestureRecognizer:tap];
+    
     
     // Setup animation
     [self setupAnimation];
@@ -169,7 +180,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 - (void)contentViewDidTap:(UITapGestureRecognizer *)recognizer
 {
     if (_airImageView.tag == 1) {
-        [self hideAirView];
+
     }
 }
 
@@ -183,26 +194,64 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 #pragma mark - AirImageView gesture
 
-- (void)handleRevealGestureOnAirImageView:(UITapGestureRecognizer *)recognizer
+- (void)handleSwipeOnAirImageView:(UISwipeGestureRecognizer*)swipe
 {
-    [self hideAirView];
-    switch ( recognizer.state )
-    {
-        case UIGestureRecognizerStateBegan:
-            break;
-            
-        case UIGestureRecognizerStateChanged:
-            break;
-            
-        case UIGestureRecognizerStateEnded:
-            break;
-            
-        case UIGestureRecognizerStateCancelled:
-            break;
-        default:
-            break;
-    }
+    [self hideAirViewOnComplete:^{
+        _airImageView.alpha = 0;
+        if (self.lastSegue.length) {
+            [self performSegueWithIdentifier:self.lastSegue sender:nil];
+        }
+    }];
 }
+
+- (void)handleTapOnAirImageView:(UITapGestureRecognizer*)swipe
+{
+    [self hideAirViewOnComplete:^{
+        _airImageView.alpha = 0;
+        if (self.lastSegue.length) {
+            [self performSegueWithIdentifier:self.lastSegue sender:nil];
+        }
+    }];
+}
+
+//- (void)handleRevealGestureOnAirImageView:(UIPanGestureRecognizer *)recognizer
+//{
+//    switch ( recognizer.state )
+//    {
+//        case UIGestureRecognizerStateBegan:
+//            break;
+//        case UIGestureRecognizerStateChanged: {
+//            CGPoint translatedPoint = [recognizer translationInView:recognizer.view];
+//            
+//            /* When pan gesture, value from             0                  ->     -900
+//             Tương ứng - airImageView      rotate : kAirImageViewRotate             0
+//                         rightView              x :     0                    -kRightViewTransX
+//                                                z :     0                    -k RightViewTransY
+//             */
+//            
+//            float rotateValue = kAirImageViewRotate - ((kAirImageViewRotate * abs(translatedPoint.x))/900);
+//            CATransform3D airImageRotate = CATransform3DIdentity;
+//            airImageRotate = CATransform3DRotate(airImageRotate, DegreesToRadians(rotateValue), 0, 1, 0);
+//            self.airImageView.layer.transform = airImageRotate;
+//            
+//            float transX = (abs(kRightViewTransX) - abs(translatedPoint.x * kRightViewTransX/900))/2;
+//            float transZ = -(abs(kRightViewTransZ) - abs(translatedPoint.x * kRightViewTransZ/900))/2;
+//            NSLog(@"x, z = %f : %f", transX, transZ);
+//            
+//            CATransform3D rightTransform = CATransform3DIdentity;
+//            rightTransform = CATransform3DTranslate(rightTransform, transX, 0, transZ);
+//            self.rightView.layer.transform = rightTransform;
+//        }
+//            break;
+//        case UIGestureRecognizerStateEnded:
+////            [self hideAirView];
+//            break;
+//        case UIGestureRecognizerStateCancelled:
+//            break;
+//        default:
+//            break;
+//    }
+//}
 
 
 #pragma mark - Gesture Based Reveal
@@ -282,8 +331,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     self.lastDeegreesRotateTransform = rotateDegress;
     
     // Rotate airImageView
-    self.airImageView.layer.transform = CATransform3DIdentity;
-    CATransform3D airImageRotate = self.airImageView.layer.transform;
+    CATransform3D airImageRotate = CATransform3DIdentity;
     airImageRotate = CATransform3DRotate(airImageRotate, DegreesToRadians(kAirImageViewRotate - rotateDegress), 0, 1, 0);
     self.airImageView.layer.transform = airImageRotate;
 }
@@ -502,15 +550,18 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 - (void)rowDidTouch:(UIButton*)button
 {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(segueForRowAtIndexPath:)]) {
-        NSString * segue = [self.delegate segueForRowAtIndexPath:[NSIndexPath indexPathForRow:button.tag
-                                                                                    inSection:button.superview.tag]];
-        if (segue.length) {
-            // Show  animation
-            [self performSegueWithIdentifier:segue sender:nil];
-        }
-    }
     NSLog(@"did touch");
+    
+    [self hideAirViewOnComplete:^{
+        if (self.delegate && [self.delegate respondsToSelector:@selector(segueForRowAtIndexPath:)]) {
+            NSString * segue = [self.delegate segueForRowAtIndexPath:[NSIndexPath indexPathForRow:button.tag
+                                                                                        inSection:button.superview.tag]];
+            if (segue.length) {
+                // Show  animation
+                [self performSegueWithIdentifier:segue sender:nil];
+            }
+        }
+    }];
 }
 
 #pragma mark - property
@@ -562,7 +613,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 #pragma mark - Show/Hide air view controller
 
-- (void)showAirViewFromViewController:(UIViewController*)controller
+- (void)showAirViewFromViewController:(UIViewController*)controller complete:(void (^)(void))complete
 {
     // Init panGestureRecognizer for scroll on sessionViews
     if (!panGestureRecognizer) {
@@ -595,12 +646,12 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     self.airImageView.layer.transform = CATransform3DIdentity;
     self.contentView.layer.transform  = CATransform3DIdentity;
     
-    CATransform3D leftTransform = self.leftView.layer.transform;
+    CATransform3D leftTransform = CATransform3DIdentity;
     leftTransform = CATransform3DTranslate(leftTransform, kLeftViewTransX , 0, 0);
     leftTransform = CATransform3DRotate(leftTransform, DegreesToRadians(kLeftViewRotate), 0, 1, 0);
     self.leftView.layer.transform = leftTransform;
     
-    [UIView animateWithDuration:3
+    [UIView animateWithDuration:kDuration
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^
@@ -618,14 +669,15 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
          leftTransform = CATransform3DTranslate(leftTransform, -kLeftViewTransX , 0, 0);
          self.leftView.layer.transform = leftTransform;
      } completion:^(BOOL finished) {
+         if (complete) complete();
      }];
     
     _airImageView.tag = 1;
 }
 
-- (void)hideAirView
+- (void)hideAirViewOnComplete:(void (^)(void))complete
 {
-    [UIView animateWithDuration:3
+    [UIView animateWithDuration:kDuration
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^
@@ -643,10 +695,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
          leftTransform = CATransform3DTranslate(leftTransform, kLeftViewTransX , 0, 0);
          self.leftView.layer.transform = leftTransform;
      } completion:^(BOOL finished) {
-         _airImageView.alpha = 0;
-         if (self.lastSegue.length) {
-             [self performSegueWithIdentifier:self.lastSegue sender:nil];
-         }
+         if (complete) complete();
      }];
     
     _airImageView.tag = 0;
