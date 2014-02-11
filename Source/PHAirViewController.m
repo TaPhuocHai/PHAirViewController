@@ -436,7 +436,9 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     }
     
     // Get thumbnailImage
-    UIImage * nextThumbnail = [self getThumbnailImageAtIndexPath:self.currentIndexPath];
+    NSIndexPath * lastIndexInThisSession = [NSIndexPath indexPathForRow:[lastIndexInSession[@(currentIndexSession)] intValue]
+                                                              inSection:currentIndexSession];
+    UIImage * nextThumbnail = [self getThumbnailImageAtIndexPath:lastIndexInThisSession];
     if (nextThumbnail) {
         self.airImageView.image = nextThumbnail;
     }
@@ -463,7 +465,9 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     }
     
     // Get thumbnailImage
-    UIImage * prevThumbnail = [self getThumbnailImageAtIndexPath:self.currentIndexPath];
+    NSIndexPath * lastIndexInThisSession = [NSIndexPath indexPathForRow:[lastIndexInSession[@(currentIndexSession)] intValue]
+                                                              inSection:currentIndexSession];
+    UIImage * prevThumbnail = [self getThumbnailImageAtIndexPath:lastIndexInThisSession];
     if (prevThumbnail) {
         self.airImageView.image = prevThumbnail;
     }
