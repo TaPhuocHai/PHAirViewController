@@ -63,7 +63,7 @@
                     <navigationItem key="navigationItem" id="ORg-ay-qbW"/>
                     <connections>
                         <segue destination="anU-bh-G9x" kind="custom" identifier="phair_root" customClass="PHAirViewControllerSegue" id="VQk-Wq-jj8"/>
-                        <segue destination="4lk-Ir-43j" kind="custom" identifier="segue1" customClass="PHAirViewControllerSegue" id="bPo-ic-85H"/>
+                        <segue destination="nga-er-Iz7" kind="custom" identifier="segue1" customClass="PHAirViewControllerSegue" id="Um7-Po-Dih"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ynY-kr-Zce" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -87,11 +87,28 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
+                    <navigationItem key="navigationItem" id="8rc-ql-8kZ"/>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0fP-Tf-Ty0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1593" y="410"/>
+            <point key="canvasLocation" x="2066" y="412"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="j49-Ta-OTs">
+            <objects>
+                <navigationController definesPresentationContext="YES" id="nga-er-Iz7" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="lH7-eg-DSK"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Kir-Fe-5CY">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="4lk-Ir-43j" kind="relationship" relationship="rootViewController" id="j14-dT-Qa0"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="caX-Zz-txf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1593" y="398"/>
         </scene>
     </scenes>
     <resources>

@@ -30,7 +30,6 @@
  */
 
 #import "PHAirViewController.h"
-
 #import <QuartzCore/QuartzCore.h>
 
 #define kIndexPathRowInvalid 999
@@ -677,7 +676,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 - (UIImage*)thumbnailImageAtIndexPath:(NSIndexPath*)indexPath { return nil; }
 
-#pragma mark - button action
+#pragma mark - Button action
 
 - (void)rowDidTouch:(UIButton*)button
 {
@@ -709,6 +708,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
         if (controller) {
             [self bringViewControllerToTop:controller atIndexPath:indexPath];
         } else if (self.storyboard) {
+            // Ưu tiên sử dụng storyboard
             if (self.dataSource && [self.dataSource respondsToSelector:@selector(segueForRowAtIndexPath:)]) {
                 NSString * segue = [self.dataSource segueForRowAtIndexPath:indexPath];
                 if (segue.length) {
@@ -717,9 +717,15 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
                     }
                     @catch(NSException *exception) {}
                 }
+            } else {
+                // Sử dụng viewController
+                if (self.dataSource && [self.dataSource respondsToSelector:@selector(viewControllerForIndexPath:)]) {
+                    UIViewController * controller = [self.dataSource viewControllerForIndexPath:indexPath];
+                    [self bringViewControllerToTop:controller atIndexPath:indexPath];
+                }
             }
         } else {
-            UIViewController * controller = [self getViewControllerAtIndexPath:indexPath];
+            UIViewController * controller = [self.dataSource viewControllerForIndexPath:indexPath];
             [self bringViewControllerToTop:controller atIndexPath:indexPath];
         }
     }];

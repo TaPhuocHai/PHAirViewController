@@ -8,7 +8,9 @@
 
 #import "PHMenuViewController.h"
 
-@implementation PHMenuViewController
+@implementation PHMenuViewController{
+    NSData * data;
+}
 
 - (void)viewDidLoad
 {
@@ -19,7 +21,7 @@
 
 - (NSInteger)numberOfSession
 {
-    return 3;
+    return 2;
 }
 
 - (NSInteger)numberOfRowsInSession:(NSInteger)sesion
