@@ -265,7 +265,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 - (void)handleTapOnAirImageView:(UITapGestureRecognizer*)swipe
 {
     [self hideAirViewOnComplete:^{
-        [self bringViewControllerToTop:[self getViewControllerAtIndexPath:self.currentIndexPath]
+        [self bringViewControllerToTop:self.fontViewController
                            atIndexPath:self.currentIndexPath];
     }];
 }
@@ -798,12 +798,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     }
     
     // Create Image for airImageView
-    if (controller.navigationController) {
-        _airImageView.image = [self imageWithView:controller.navigationController.view];
-        [controller.navigationController setNavigationBarHidden:YES animated:NO];
-    } else {
-        _airImageView.image = [self imageWithView:controller.view];
-    }
+     _airImageView.image = [self imageWithView:controller.view];
     
     // Save thumbnail
     [self saveThumbnailImage:_airImageView.image atIndexPath:self.currentIndexPath];

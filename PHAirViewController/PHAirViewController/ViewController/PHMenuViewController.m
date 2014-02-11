@@ -17,24 +17,26 @@
     [super viewDidLoad];
     
     // Init menu data
-    
+    NSArray * session1 = [NSArray arrayWithObjects:@"phair_root",@"segue1", nil];
+    NSArray * session2 = [NSArray arrayWithObjects:@"segue2",@"segue3", nil];
+    data = [NSArray arrayWithObjects:session1, session2, nil];
 }
 
 #pragma mark - PHAirMenuDelegate
 
 - (NSInteger)numberOfSession
 {
-    return 2;
+    return data.count;
 }
 
 - (NSInteger)numberOfRowsInSession:(NSInteger)sesion
 {
-    return 4;
+    return ((NSArray*)data[sesion]).count;
 }
 
 - (NSString*)titleForRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    return [NSString stringWithFormat:@"Row %ld in %d", (long)indexPath.row, indexPath.section];
+    return [NSString stringWithFormat:@"Row %ld in %ld", (long)indexPath.row, (long)indexPath.section];
 }
 
 - (NSString*)titleForHeaderAtSession:(NSInteger)session
@@ -44,7 +46,7 @@
 
 - (NSString*)segueForRowAtIndexPath:(NSIndexPath*)indexPath
 {
-    return @"phair_root";
+    return data[indexPath.section][indexPath.row];
 }
 
 - (UIImage*)thumbnailImageAtIndexPath:(NSIndexPath*)indexPath

@@ -15,15 +15,17 @@
     [super viewDidLoad];
     
     UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
-    button.frame = CGRectMake(0, 0, 40, 35);
-    [button setTitle:@"Left" forState:UIControlStateNormal];
+    button.frame = CGRectMake(0, 0, 50, 35);
+    [button setTitle:@"Menu" forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor blueColor] forState:UIControlStateHighlighted];
     [button addTarget:self action:@selector(leftButtonTouch) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:button];
 }
 
 - (void)leftButtonTouch
 {
-    [self.airViewController showAirViewFromViewController:self complete:nil];
+    [self.airViewController showAirViewFromViewController:self.navigationController complete:nil];
 }
 
 @end
