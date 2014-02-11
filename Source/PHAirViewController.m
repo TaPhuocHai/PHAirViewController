@@ -318,35 +318,35 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 #pragma mark - Gesture Based Reveal
 
-- (void)_handleRevealGesture:(UIPanGestureRecognizer *)recognizer
+- (void)handleRevealGesture:(UIPanGestureRecognizer *)recognizer
 {
     switch ( recognizer.state )
     {
         case UIGestureRecognizerStateBegan:
-            [self _handleRevealGestureStateBeganWithRecognizer:recognizer];
+            [self handleRevealGestureStateBeganWithRecognizer:recognizer];
             break;
             
         case UIGestureRecognizerStateChanged:
-            [self _handleRevealGestureStateChangedWithRecognizer:recognizer];
+            [self handleRevealGestureStateChangedWithRecognizer:recognizer];
             break;
             
         case UIGestureRecognizerStateEnded:
-            [self _handleRevealGestureStateEndedWithRecognizer:recognizer];
+            [self handleRevealGestureStateEndedWithRecognizer:recognizer];
             break;
             
         case UIGestureRecognizerStateCancelled:
-            [self _handleRevealGestureStateCancelledWithRecognizer:recognizer];
+            [self handleRevealGestureStateCancelledWithRecognizer:recognizer];
             break;
         default:
             break;
     }
 }
 
-- (void)_handleRevealGestureStateBeganWithRecognizer:(UIPanGestureRecognizer *)recognizer
+- (void)handleRevealGestureStateBeganWithRecognizer:(UIPanGestureRecognizer *)recognizer
 {
 }
 
-- (void)_handleRevealGestureStateChangedWithRecognizer:(UIPanGestureRecognizer *)recognizer
+- (void)handleRevealGestureStateChangedWithRecognizer:(UIPanGestureRecognizer *)recognizer
 {
     CGFloat translation = [recognizer translationInView:self.leftView].y;
     self.leftView.top = -(self.view.height - kHeaderTitleHeight) + translation;
@@ -398,7 +398,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     self.airImageView.layer.transform = airImageRotate;
 }
 
-- (void)_handleRevealGestureStateEndedWithRecognizer:(UIPanGestureRecognizer *)recognizer
+- (void)handleRevealGestureStateEndedWithRecognizer:(UIPanGestureRecognizer *)recognizer
 {
     if (sessionViews.count == 0) {
         return;
@@ -433,7 +433,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     }
 }
 
-- (void)_handleRevealGestureStateCancelledWithRecognizer:(UIPanGestureRecognizer *)recognizer
+- (void)handleRevealGestureStateCancelledWithRecognizer:(UIPanGestureRecognizer *)recognizer
 {
 }
 
