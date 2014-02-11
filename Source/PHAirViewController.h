@@ -42,9 +42,9 @@
 @property (nonatomic, assign) id <PHAirMenuDataSource> dataSource;
 
 @property (nonatomic, readonly) UIViewController * fontViewController;
-@property (nonatomic, readonly) NSIndexPath      * currentIndexPath;
+@property (nonatomic)           NSIndexPath      * currentIndexPath;
 
-- (id)initWithRootViewController:(UIViewController*)viewController;
+- (id)initWithRootViewController:(UIViewController*)viewController atIndexPath:(NSIndexPath*)indexPath;
 
 - (void)reloadData;
 - (void)showAirViewFromViewController:(UIViewController*)controller complete:(void (^)(void))complete;

@@ -32,8 +32,6 @@
 #import "PHAirViewController.h"
 #import <QuartzCore/QuartzCore.h>
 
-#define kIndexPathRowInvalid 999
-
 #define kMenuItemHeight 50
 #define kSessionWidth   220
 
@@ -101,15 +99,18 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     NSArray * viewControllers;
 }
 
-@synthesize contentView = _contentView, airImageView = _airImageView;
+@synthesize contentView = _contentView,
+            airImageView = _airImageView,
+            currentIndexPath = _currentIndexPath;
 
 - (id)initWithRootViewController:(UIViewController*)viewController
+                     atIndexPath:(NSIndexPath*)indexPath
 {
     if (self = [super init]) {
         CGRect rect = [UIScreen mainScreen].applicationFrame;
         self.view.frame = CGRectMake(0, 0, rect.size.width, rect.size.height);
         [self bringViewControllerToTop:viewController
-                           atIndexPath:[NSIndexPath indexPathForRow:kIndexPathRowInvalid inSection:0]];
+                           atIndexPath:indexPath];
     }
     return self;
 }
@@ -126,7 +127,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     currentIndexSession = 0;
     
     lastIndexInSession = [NSMutableDictionary dictionary];
-    lastIndexInSession[@(0)] = @(kIndexPathRowInvalid);
+    lastIndexInSession[@(0)] = @(0);
     
     // Set delegate & dataSource
     self.delegate = self;
@@ -196,10 +197,10 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     
     // save information
     _fontViewController = controller;
+    _currentIndexPath   = indexPath;
+    
     if (indexPath) {
-        if (indexPath.row != kIndexPathRowInvalid) {
-            lastIndexInSession[@(indexPath.section)] = @(indexPath.row);
-        }
+        lastIndexInSession[@(indexPath.section)] = @(indexPath.row);
     }
     
     // Save view controller
@@ -235,6 +236,11 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
                               inSection:currentIndexSession];
 }
 
+- (void)setCurrentIndexPath:(NSIndexPath *)currentIndexPath
+{
+    _currentIndexPath = currentIndexPath;
+}
+
 #pragma mark - ContentView
 
 - (void)contentViewDidTap:(UITapGestureRecognizer *)recognizer
@@ -257,7 +263,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 - (void)handleSwipeOnAirImageView:(UISwipeGestureRecognizer*)swipe
 {
     [self hideAirViewOnComplete:^{
-        [self bringViewControllerToTop:[self getViewControllerAtIndexPath:self.currentIndexPath]
+        [self bringViewControllerToTop:self.fontViewController
                            atIndexPath:self.currentIndexPath];
     }];
 }
