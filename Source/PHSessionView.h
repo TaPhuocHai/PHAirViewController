@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-#define kHeaderTitleHeight   70
+#define kHeaderTitleHeight   80
 
 @interface PHSessionView : UIView
 

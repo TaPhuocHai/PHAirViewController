@@ -12,21 +12,40 @@
 #import "PHMenuItemView.h"
 
 @protocol PHAirMenuDelegate <NSObject>
+@optional
+- (BOOL)shouldSelectRowAtIndex:(NSIndexPath*)indexPath;
+- (void)didSelectRowAtIndex:(NSIndexPath*)indexPath;
+
+- (void)willShowAirViewController;
+- (void)willHidenAirViewController;
+- (void)didHidenAirViewController;
+@end
+
+@protocol PHAirMenuDataSource <NSObject>
 @required
 - (NSInteger)numberOfSession;
 - (NSInteger)numberOfRowsInSession:(NSInteger)sesion;
 - (NSString*)titleForRowAtIndexPath:(NSIndexPath*)indexPath;
 - (NSString*)titleForHeaderAtSession:(NSInteger)session;
 @optional
+- (NSIndexPath*)indexPathForRootViewController;
 - (UIImage*)thumbnailImageAtIndexPath:(NSIndexPath*)indexPath;
 - (NSString*)segueForRowAtIndexPath:(NSIndexPath*)indexPath;
+- (UIViewController*)viewControllerForIndexPath:(NSIndexPath*)indexPath;
 @end
 
-@interface PHAirViewController : UIViewController <PHAirMenuDelegate, UIGestureRecognizerDelegate>
+@interface PHAirViewController : UIViewController <PHAirMenuDelegate, PHAirMenuDataSource, UIGestureRecognizerDelegate>
 
-@property (nonatomic, assign) id <PHAirMenuDelegate> delegate;
+@property (nonatomic, strong) UIColor * titleNormalColor;
+@property (nonatomic, strong) UIColor * titleHighlightColor;
+
+@property (nonatomic, assign) id <PHAirMenuDelegate>   delegate;
+@property (nonatomic, assign) id <PHAirMenuDataSource> dataSource;
 
 @property (nonatomic, readonly) UIViewController * fontViewController;
+@property (nonatomic, readonly) NSIndexPath      * currentIndexPath;
+
+- (id)initWithRootViewController:(UIViewController*)viewController;
 
 - (void)reloadData;
 - (void)showAirViewFromViewController:(UIViewController*)controller complete:(void (^)(void))complete;

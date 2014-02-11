@@ -24,7 +24,7 @@
 
 - (NSInteger)numberOfRowsInSession:(NSInteger)sesion
 {
-    return 1;
+    return 4;
 }
 
 - (NSString*)titleForRowAtIndexPath:(NSIndexPath*)indexPath

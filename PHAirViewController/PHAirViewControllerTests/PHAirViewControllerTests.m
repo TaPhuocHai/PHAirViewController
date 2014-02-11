@@ -1,18 +1,18 @@
 //
-//  PHAirTransactionTests.m
-//  PHAirTransactionTests
+//  PHAirViewControllerTests.m
+//  PHAirViewControllerTests
 //
-//  Created by Ta Phuoc Hai on 1/7/14.
+//  Created by Ta Phuoc Hai on 2/11/14.
 //  Copyright (c) 2014 Phuoc Hai. All rights reserved.
 //
 
 #import <XCTest/XCTest.h>
 
-@interface PHAirTransactionTests : XCTestCase
+@interface PHAirViewControllerTests : XCTestCase
 
 @end
 
-@implementation PHAirTransactionTests
+@implementation PHAirViewControllerTests
 
 - (void)setUp
 {

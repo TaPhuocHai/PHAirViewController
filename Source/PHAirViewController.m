@@ -33,6 +33,8 @@
 
 #import <QuartzCore/QuartzCore.h>
 
+#define kIndexPathRowInvalid 999
+
 #define kMenuItemHeight 50
 #define kSessionWidth   220
 
@@ -44,10 +46,10 @@
 
 #define kAirImageViewRotateMax -42
 
-#define kDuration 0.3
+#define kDuration 0.2f
 
-CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
-CGFloat RadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
+CGFloat AirDegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
+CGFloat AirRadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
 
 static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
@@ -58,10 +60,6 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 @property (nonatomic, strong) UIView      * leftView;
 @property (nonatomic, strong) UIView      * rightView;
 @property (nonatomic, strong) UIImageView * airImageView;
-
-@property (nonatomic, strong) NSString    * lastSegue;
-@property (nonatomic, strong) NSIndexPath * lastIndexPath;
-@property (nonatomic, strong) UIViewController * lastViewController;
 
 @property (nonatomic)         float         lastDeegreesRotateTransform;
 
@@ -78,27 +76,62 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     UIPanGestureRecognizer * panGestureRecognizer;
     
     // current index sesion view
-    int        currentIndexSession;
+    int        currentIndexSession;    
     
     // for animation
     BOOL            isAnimation;
     PHSessionView * topSession;
     PHSessionView * middleSession;
     PHSessionView * bottomSession;
+    
+    NSMutableDictionary * lastIndexInSession;
+    
+    /* @[ // session 0
+        @{@(0) : thumbnail image 0,@(1) : thumbnail image 1},
+          // session 1
+        @{@(0) : thumbnail image 0,@(1) : thumbnail image 1},
+        ]
+     */
+    NSArray * thumbnailImages;
+    /* @[ // session 0
+     @{@(0) : view controller 0,@(1) : view controller 1},
+     // session 1
+     @{@(0) : view controller 0,@(1) : view controller 1},
+     ]
+     */
+    NSArray * viewControllers;
 }
 
 @synthesize contentView = _contentView, airImageView = _airImageView;
 
+- (id)initWithRootViewController:(UIViewController*)viewController
+{
+    if (self = [super init]) {
+        CGRect rect = [UIScreen mainScreen].applicationFrame;
+        self.view.frame = CGRectMake(0, 0, rect.size.width, rect.size.height);
+        [self bringViewControllerToTop:viewController
+                           atIndexPath:[NSIndexPath indexPathForRow:kIndexPathRowInvalid inSection:0]];
+    }
+    return self;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.edgesForExtendedLayout = NO;
+    if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
+        [self setEdgesForExtendedLayout:NO];
+    }
     
     // Init sessionViews
     sessionViews = [NSMutableDictionary dictionary];
     currentIndexSession = 0;
     
+    lastIndexInSession = [NSMutableDictionary dictionary];
+    lastIndexInSession[@(0)] = @(kIndexPathRowInvalid);
+    
+    // Set delegate & dataSource
     self.delegate = self;
+    self.dataSource = self;
     
     // Init contentView
     [self.view addSubview:self.wrapperView];
@@ -110,13 +143,15 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     
     // Init airImageView
     [self.rightView addSubview:self.airImageView];
-    self.airImageView.alpha = 0;
+    
+    // Setting color
+    _titleNormalColor    = [UIColor colorWithRed:0.45 green:0.45 blue:0.45 alpha:1];
+    _titleHighlightColor = [UIColor blackColor];
     
     // Init root view controller
     if ( self.storyboard) {
         @try {
             [self performSegueWithIdentifier:PHSegueRootIdentifier sender:nil];
-            self.lastSegue = PHSegueRootIdentifier;
         }
         @catch(NSException *exception) {}
     }
@@ -135,9 +170,11 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
                                                                           action:@selector(handleTapOnAirImageView:)];
     [self.airImageView addGestureRecognizer:tap];
     
-    
     // Setup animation
     [self setupAnimation];
+    
+    self.leftView.alpha = 0;
+    self.rightView.alpha = 0;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -148,31 +185,55 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     [self reloadData];
 }
 
+- (void)bringViewControllerToTop:(UIViewController*)controller atIndexPath:(NSIndexPath*)indexPath
+{
+    if (!controller) return;
+    
+    // remove from super view
+    if (self.fontViewController && self.fontViewController.view.superview) {
+        [self.fontViewController removeFromParentViewController];
+        [self.fontViewController.view removeFromSuperview];
+    }
+    
+    // save information
+    _fontViewController = controller;
+    if (indexPath) {
+        if (indexPath.row != kIndexPathRowInvalid) {
+            lastIndexInSession[@(indexPath.section)] = @(indexPath.row);
+        }
+    }
+    
+    // Save view controller
+    [self saveViewControler:controller atIndexPath:indexPath];
+    
+    // move to top
+    [self addChildViewController:_fontViewController];
+    UIView * controllerView = _fontViewController.view;
+    controllerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    controllerView.frame = self.view.bounds;
+    [self.view addSubview:controllerView];
+    [_fontViewController didMoveToParentViewController:self];
+}
+
 #pragma mark storyboard support
 
 - (void)prepareForSegue:(PHAirViewControllerSegue *)segue sender:(id)sender
 {
     if ( [segue isKindOfClass:[PHAirViewControllerSegue class]] && sender == nil )
     {
-        if (self.fontViewController && self.fontViewController.view.superview) {
-            [self.fontViewController removeFromParentViewController];
-            [self.fontViewController.view removeFromSuperview];
-        }
-        
         segue.performBlock = ^(PHAirViewControllerSegue* rvc_segue, UIViewController* svc, UIViewController* dvc)
         {
-            _fontViewController = dvc;
-            
-            [self addChildViewController:dvc];
-            
-            UIView * controllerView = dvc.view;
-            controllerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-            controllerView.frame = self.view.bounds;
-            [self.view addSubview:controllerView];
-            
-            [dvc didMoveToParentViewController:self];
+            [self bringViewControllerToTop:dvc atIndexPath:[NSIndexPath indexPathForRow:999 inSection:0]];
         };
     }
+}
+
+#pragma mark - property
+
+- (NSIndexPath*)currentIndexPath
+{
+    return [NSIndexPath indexPathForRow:[lastIndexInSession[@(currentIndexSession)] intValue]
+                              inSection:currentIndexSession];
 }
 
 #pragma mark - ContentView
@@ -197,20 +258,16 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 - (void)handleSwipeOnAirImageView:(UISwipeGestureRecognizer*)swipe
 {
     [self hideAirViewOnComplete:^{
-        _airImageView.alpha = 0;
-        if (self.lastSegue.length) {
-            [self performSegueWithIdentifier:self.lastSegue sender:nil];
-        }
+        [self bringViewControllerToTop:[self getViewControllerAtIndexPath:self.currentIndexPath]
+                           atIndexPath:self.currentIndexPath];
     }];
 }
 
 - (void)handleTapOnAirImageView:(UITapGestureRecognizer*)swipe
 {
     [self hideAirViewOnComplete:^{
-        _airImageView.alpha = 0;
-        if (self.lastSegue.length) {
-            [self performSegueWithIdentifier:self.lastSegue sender:nil];
-        }
+        [self bringViewControllerToTop:[self getViewControllerAtIndexPath:self.currentIndexPath]
+                           atIndexPath:self.currentIndexPath];
     }];
 }
 
@@ -301,14 +358,14 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     int distanceScroll = 0;
     // Nếu là kéo xuống
     if (afterTop - firstTop > 0) {
-        int topMiddleSessionView = self.leftView.top + sessionViewHeight;
+        int topMiddleSessionView = self.leftView.top + sessionViewHeight + 40;
         // Nếu điểm top của middleSession trên contentView nằm phía trên của giữa màn hình (theo trục y)
         if (topMiddleSessionView < self.view.height/2) {
             distanceScroll = self.view.height/2 - topMiddleSessionView;
         }
         // Nếu điểm top của middleSession trên contentView nằm phía dưới của giữa màn hình (theo trục y)
         else {
-            distanceScroll = topMiddleSessionView - self.view.height/2;
+            distanceScroll = topMiddleSessionView - self.view.height/2 + 40;
         }
     }
     // Nếu là kéo lên
@@ -332,7 +389,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     
     // Rotate airImageView
     CATransform3D airImageRotate = CATransform3DIdentity;
-    airImageRotate = CATransform3DRotate(airImageRotate, DegreesToRadians(kAirImageViewRotate - rotateDegress), 0, 1, 0);
+    airImageRotate = CATransform3DRotate(airImageRotate, AirDegreesToRadians(kAirImageViewRotate - rotateDegress), 0, 1, 0);
     self.airImageView.layer.transform = airImageRotate;
 }
 
@@ -349,7 +406,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     
     // Nếu là kéo xuống
     if (afterTop - firstTop > 0) {
-        if (afterTop - firstTop > self.view.height/2) {
+        if (afterTop - firstTop > self.view.height/2 - 40) {
             // Đã kéo đủ một chiều cao cần thiết
             // Run animation down to next
             [self prevSession];
@@ -361,7 +418,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     }
     // Nếu là kéo lên
     else {
-        if (firstTop - afterTop > self.view.height/2) {
+        if (firstTop - afterTop > self.view.height/2 - 40) {
             // Run animation up to next
             [self nextSession];
         }  else {
@@ -379,6 +436,19 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 - (void)nextSession
 {
+    // Next index
+    currentIndexSession ++;
+    if (currentIndexSession >= sessionViews.count) {
+        currentIndexSession = 0;
+    }
+    
+    // Get thumbnailImage
+    UIImage * nextThumbnail = [self getThumbnailImageAtIndexPath:self.currentIndexPath];
+    if (nextThumbnail) {
+        self.airImageView.image = nextThumbnail;
+    }
+    
+    // Animation
     [UIView animateWithDuration:0.2
                           delay:0
                         options:UIViewAnimationOptionCurveEaseInOut
@@ -386,18 +456,25 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     {
         self.leftView.top = -(self.leftView.height/3)*2;
     } completion:^(BOOL finished) {
-        currentIndexSession ++;
-        if (currentIndexSession >= sessionViews.count) {
-            currentIndexSession = 0;
-        }
         [self layoutContaintView];
-        self.leftView.top = -self.leftView.height/3;
     }];
     [self rotateAirImage];
 }
 
 - (void)prevSession
 {
+    // Prev index
+    currentIndexSession --;
+    if (currentIndexSession < 0) {
+        currentIndexSession = sessionViews.count - 1;
+    }
+    
+    // Get thumbnailImage
+    UIImage * prevThumbnail = [self getThumbnailImageAtIndexPath:self.currentIndexPath];
+    if (prevThumbnail) {
+        self.airImageView.image = prevThumbnail;
+    }
+    
     [UIView animateWithDuration:0.2
                           delay:0
                         options:UIViewAnimationOptionCurveEaseInOut
@@ -405,12 +482,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
      {
          self.leftView.top = 0;
      } completion:^(BOOL finished) {
-         currentIndexSession --;
-         if (currentIndexSession < 0) {
-             currentIndexSession = sessionViews.count - 1;
-         }
          [self layoutContaintView];
-         self.leftView.top = -self.leftView.height/3;
      }];
     [self rotateAirImage];
 }
@@ -432,7 +504,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 {
     [UIView animateWithDuration:0.2 animations:^{
         CATransform3D airImageRotate = self.airImageView.layer.transform;
-        airImageRotate = CATransform3DRotate(airImageRotate, DegreesToRadians(self.lastDeegreesRotateTransform), 0, 1, 0);
+        airImageRotate = CATransform3DRotate(airImageRotate, AirDegreesToRadians(self.lastDeegreesRotateTransform), 0, 1, 0);
         self.airImageView.layer.transform = airImageRotate;
     }];
 }
@@ -441,15 +513,26 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 - (void)reloadData
 {
-    if (!self.delegate) return;
+    if (!self.dataSource) return;
     
     // Get number session
-    session = [self.delegate numberOfSession];
+    session = [self.dataSource numberOfSession];
+    
+    // Init
+    NSMutableArray * tempThumbnails = [NSMutableArray array];
+    NSMutableArray * tempViewControllers = [NSMutableArray array];
+    for (int i = 0 ; i < session; i ++) {
+        [tempThumbnails addObject:[NSMutableDictionary dictionary]];
+        [tempViewControllers addObject:[NSMutableDictionary dictionary]];
+    }
+    thumbnailImages = [NSArray arrayWithArray:tempThumbnails];
+    viewControllers = [NSArray arrayWithArray:tempViewControllers];
+
     
     // Get number rows of session
     NSMutableArray * temp = [NSMutableArray array];
     for (int i = 0; i < session; i ++) {
-        [temp addObject:@([self.delegate numberOfRowsInSession:i])];
+        [temp addObject:@([self.dataSource numberOfRowsInSession:i])];
     }
     rowsOfSession = [NSArray arrayWithArray:temp];
     
@@ -458,14 +541,15 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     for (int i = 0; i < session; i ++) {
         PHSessionView * sessionView = sessionViews[@(i)];
         if (!sessionView) {
-            sessionView = [[PHSessionView alloc] initWithFrame:CGRectMake(0, 0, kSessionWidth, sessionHeight)];
+            sessionView = [[PHSessionView alloc] initWithFrame:CGRectMake(30, 0, kSessionWidth, sessionHeight)];
             [sessionViews setObject:sessionView forKey:@(i)];
         }
         // Set title for header session
-        if ([self.delegate respondsToSelector:@selector(titleForHeaderAtSession:)]) {
-            sessionView.label.text = [self.delegate titleForHeaderAtSession:i];
-            sessionView.label.textColor = [UIColor blackColor];
+        if ([self.dataSource respondsToSelector:@selector(titleForHeaderAtSession:)]) {
+            sessionView.label.text = [self.dataSource titleForHeaderAtSession:i];
+            sessionView.label.textColor = [UIColor colorWithRed:0.45 green:0.45 blue:0.45 alpha:1];
             sessionView.label.backgroundColor = [UIColor clearColor];
+            sessionView.label.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
         }
     }
     
@@ -477,25 +561,28 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
             [view removeFromSuperview];
         }
 
-        int firstTop = (sessionView.containView.frame.size.height - [rowsOfSession[i] intValue] * 44)/2;
+        int firstTop = (sessionView.containView.frame.size.height - [rowsOfSession[i] intValue] * 36)/2;
         if (firstTop < 0) firstTop = 0;
         for (int j = 0; j < [rowsOfSession[i] intValue]; j ++) {
-            NSString * title = [self.delegate titleForRowAtIndexPath:[NSIndexPath indexPathForRow:j inSection:i]];
+            NSString * title = [self.dataSource titleForRowAtIndexPath:[NSIndexPath indexPathForRow:j inSection:i]];
             UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
             [button setTitle:title forState:UIControlStateNormal];
             [button addTarget:self action:@selector(rowDidTouch:) forControlEvents:UIControlEventTouchUpInside];
-            [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-            button.frame = CGRectMake(0, firstTop + 44*j, 100, 44);
+            [button setTitleColor:_titleNormalColor forState:UIControlStateNormal];
+            [button setTitleColor:_titleHighlightColor forState:UIControlStateHighlighted];
+            [button setTitleColor:_titleHighlightColor forState:UIControlStateSelected];
+            button.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14];
+            button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+            button.frame = CGRectMake(0, firstTop + 36*j, 200, 25);
             button.tag = j;
             sessionView.containView.tag = i;
             [sessionView.containView addSubview:button];
         }
     }
     
+    // layout content view
     [self layoutContaintView];
 }
-
-#pragma mark - layout
 
 - (void)layoutContaintView
 {
@@ -505,18 +592,45 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
         bottomSession = nil;
         return;
     }
+    if (topSession.superview) {
+        [topSession removeFromSuperview];
+        topSession = nil;
+    }
+    if (middleSession.superview) {
+        [middleSession removeFromSuperview];
+        middleSession = nil;
+    }
+    if (bottomSession.superview) {
+        [bottomSession removeFromSuperview];
+        bottomSession = nil;
+    }
     
     // Init top/middle/bottom session view
-    middleSession = sessionViews[@(currentIndexSession)];
-    if (currentIndexSession == 0) {
-        topSession = sessionViews[@(sessionViews.count - 1)];
+    if (sessionViews.count == 1) {
+        topSession = sessionViews[@(0)];
+        middleSession = (PHSessionView*)[self duplicate:topSession];
+        bottomSession = (PHSessionView*)[self duplicate:topSession];
+    } else if(sessionViews.count == 2) {
+        middleSession = sessionViews[@(currentIndexSession)];
+        if (currentIndexSession == 0) {
+            topSession = sessionViews[@(1)];
+            bottomSession = (PHSessionView*)[self duplicate:topSession];
+        } else {
+            topSession = sessionViews[@(0)];
+            bottomSession = (PHSessionView*)[self duplicate:topSession];
+        }
     } else {
-        topSession = sessionViews[@(currentIndexSession - 1)];
-    }
-    if (currentIndexSession + 1 >= sessionViews.count) {
-        bottomSession = sessionViews[@(0)];
-    } else {
-        bottomSession = sessionViews[@(currentIndexSession + 1)];
+        middleSession = sessionViews[@(currentIndexSession)];
+        if (currentIndexSession == 0) {
+            topSession = sessionViews[@(sessionViews.count - 1)];
+        } else {
+            topSession = sessionViews[@(currentIndexSession - 1)];
+        }
+        if (currentIndexSession + 1 >= sessionViews.count) {
+            bottomSession = sessionViews[@(0)];
+        } else {
+            bottomSession = sessionViews[@(currentIndexSession + 1)];
+        }
     }
     
     // Pos for top/middle/bottom session
@@ -524,14 +638,31 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     middleSession.top = topSession.bottom;
     bottomSession.top = middleSession.bottom;
     
-    if (topSession.superview)    [topSession removeFromSuperview];
-    if (middleSession.superview) [middleSession removeFromSuperview];
-    if (bottomSession.superview) [bottomSession removeFromSuperview];
-    
     // Add top/middle/bottom to content view
     [self.leftView addSubview:topSession];
     [self.leftView addSubview:middleSession];
     [self.leftView addSubview:bottomSession];
+    
+    self.leftView.top = - (self.leftView.height)/3;
+    
+    // Update color
+    [self updateButtonColor];
+}
+
+- (void)updateButtonColor
+{
+    for (int i = 0 ; i < sessionViews.count; i ++) {
+        PHSessionView * sessionView = sessionViews[@(i)];
+        // Dòng đã touch cuối cùng trong session i
+        int indexHighlight = [lastIndexInSession[@(i)] intValue];
+        //
+        for (id object in sessionView.containView.allSubviews) {
+        if ([object isKindOfClass:[UIButton class]]) {
+            UIButton * button = object;
+            button.highlighted = (button.tag == indexHighlight) ? YES : NO;
+        }
+        }
+    }
 }
 
 #pragma mark - PHAirMenuDelegate
@@ -550,16 +681,46 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 - (void)rowDidTouch:(UIButton*)button
 {
-    NSLog(@"did touch");
+    // Save row touch in session
+    lastIndexInSession[@(currentIndexSession)] = @(button.superview.tag);
+    
+    NSIndexPath * indexPath = [NSIndexPath indexPathForRow:button.tag
+                                                 inSection:button.superview.tag];
+    
+    // Should select ?
+    if (self.delegate && [self.delegate respondsToSelector:@selector(shouldSelectRowAtIndex:)]) {
+        if (![self.delegate shouldSelectRowAtIndex:indexPath]) {
+            return;
+        }
+    }
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectRowAtIndex:)]) {
+        [self.delegate didSelectRowAtIndex:indexPath];
+    }
+    
+    // Get thumbnailImage
+    UIImage * nextThumbnail = [self getThumbnailImageAtIndexPath:indexPath];
+    if (nextThumbnail) {
+        self.airImageView.image = nextThumbnail;
+    }
     
     [self hideAirViewOnComplete:^{
-        if (self.delegate && [self.delegate respondsToSelector:@selector(segueForRowAtIndexPath:)]) {
-            NSString * segue = [self.delegate segueForRowAtIndexPath:[NSIndexPath indexPathForRow:button.tag
-                                                                                        inSection:button.superview.tag]];
-            if (segue.length) {
-                // Show  animation
-                [self performSegueWithIdentifier:segue sender:nil];
+        UIViewController * controller = [self getViewControllerAtIndexPath:indexPath];
+        if (controller) {
+            [self bringViewControllerToTop:controller atIndexPath:indexPath];
+        } else if (self.storyboard) {
+            if (self.dataSource && [self.dataSource respondsToSelector:@selector(segueForRowAtIndexPath:)]) {
+                NSString * segue = [self.dataSource segueForRowAtIndexPath:indexPath];
+                if (segue.length) {
+                    @try {
+                        [self performSegueWithIdentifier:segue sender:nil];
+                    }
+                    @catch(NSException *exception) {}
+                }
             }
+        } else {
+            UIViewController * controller = [self getViewControllerAtIndexPath:indexPath];
+            [self bringViewControllerToTop:controller atIndexPath:indexPath];
         }
     }];
 }
@@ -613,8 +774,16 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 #pragma mark - Show/Hide air view controller
 
-- (void)showAirViewFromViewController:(UIViewController*)controller complete:(void (^)(void))complete
+- (void)showAirViewFromViewController:(UIViewController*)controller
+                             complete:(void (^)(void))complete
 {
+    // update color
+    [self updateButtonColor];
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(willShowAirViewController)]) {
+        [self.delegate willShowAirViewController];
+    }
+    
     // Init panGestureRecognizer for scroll on sessionViews
     if (!panGestureRecognizer) {
         panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_handleRevealGesture:)];
@@ -629,7 +798,11 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     } else {
         _airImageView.image = [self imageWithView:controller.view];
     }
-    _airImageView.alpha = 1;
+    
+    // Save thumbnail
+    [self saveThumbnailImage:_airImageView.image atIndexPath:self.currentIndexPath];
+    // Save viewController
+    [self saveViewControler:controller atIndexPath:self.currentIndexPath];
     
     // Fix for touch and pan
     [self.view bringSubviewToFront:self.wrapperView];
@@ -648,16 +821,21 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     
     CATransform3D leftTransform = CATransform3DIdentity;
     leftTransform = CATransform3DTranslate(leftTransform, kLeftViewTransX , 0, 0);
-    leftTransform = CATransform3DRotate(leftTransform, DegreesToRadians(kLeftViewRotate), 0, 1, 0);
+    leftTransform = CATransform3DRotate(leftTransform, AirDegreesToRadians(kLeftViewRotate), 0, 1, 0);
     self.leftView.layer.transform = leftTransform;
+    
+    self.rightView.alpha = 1;
+    self.leftView.alpha  = 0;
     
     [UIView animateWithDuration:kDuration
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^
      {
+         self.leftView.alpha = 1;
+         
          CATransform3D airImageRotate = self.airImageView.layer.transform;
-         airImageRotate = CATransform3DRotate(airImageRotate, DegreesToRadians(kAirImageViewRotate), 0, 1, 0);
+         airImageRotate = CATransform3DRotate(airImageRotate, AirDegreesToRadians(kAirImageViewRotate), 0, 1, 0);
          self.airImageView.layer.transform = airImageRotate;
          
          CATransform3D rightTransform = self.rightView.layer.transform;
@@ -665,7 +843,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
          self.rightView.layer.transform = rightTransform;
          
          CATransform3D leftTransform = self.leftView.layer.transform;
-         leftTransform = CATransform3DRotate(leftTransform, DegreesToRadians(-kLeftViewRotate), 0, 1, 0);
+         leftTransform = CATransform3DRotate(leftTransform, AirDegreesToRadians(-kLeftViewRotate), 0, 1, 0);
          leftTransform = CATransform3DTranslate(leftTransform, -kLeftViewTransX , 0, 0);
          self.leftView.layer.transform = leftTransform;
      } completion:^(BOOL finished) {
@@ -677,13 +855,19 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 - (void)hideAirViewOnComplete:(void (^)(void))complete
 {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(willHidenAirViewController)]) {
+        [self.delegate willHidenAirViewController];
+    }
+    
     [UIView animateWithDuration:kDuration
                           delay:0.0
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^
      {
+         self.leftView.alpha = 0;
+         
          CATransform3D airImageRotate = self.airImageView.layer.transform;
-         airImageRotate = CATransform3DRotate(airImageRotate, DegreesToRadians(-kAirImageViewRotate), 0, 1, 0);
+         airImageRotate = CATransform3DRotate(airImageRotate, AirDegreesToRadians(-kAirImageViewRotate), 0, 1, 0);
          self.airImageView.layer.transform = airImageRotate;
          
          CATransform3D rightTransform = self.rightView.layer.transform;
@@ -691,10 +875,19 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
          self.rightView.layer.transform = rightTransform;
          
          CATransform3D leftTransform = self.leftView.layer.transform;
-         leftTransform = CATransform3DRotate(leftTransform, DegreesToRadians(kLeftViewRotate), 0, 1, 0);
+         leftTransform = CATransform3DRotate(leftTransform, AirDegreesToRadians(kLeftViewRotate), 0, 1, 0);
          leftTransform = CATransform3DTranslate(leftTransform, kLeftViewTransX , 0, 0);
          self.leftView.layer.transform = leftTransform;
      } completion:^(BOOL finished) {
+         self.rightView.alpha = 0;
+         self.leftView.alpha = 0;
+         
+         self.leftView.layer.transform = CATransform3DIdentity;
+         
+         if (self.delegate && [self.delegate respondsToSelector:@selector(didHidenAirViewController)]) {
+             [self.delegate didHidenAirViewController];
+         }
+         
          if (complete) complete();
      }];
     
@@ -748,6 +941,53 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 #pragma mark - helper
 
+// Get thumbnailImage of NSIndexPath
+- (UIImage*)getThumbnailImageAtIndexPath:(NSIndexPath*)indexPath
+{
+    NSMutableDictionary * thumbnailDic = thumbnailImages[indexPath.section];
+    if (thumbnailDic[@(indexPath.row)]) {
+        return thumbnailDic[@(indexPath.row)];
+    } else {
+        if ([self.dataSource respondsToSelector:@selector(thumbnailImageAtIndexPath:)]) {
+            return [self.dataSource thumbnailImageAtIndexPath:indexPath];
+        }
+    }
+    return nil;
+}
+
+// Save thumbnailImage
+- (void)saveThumbnailImage:(UIImage*)image atIndexPath:(NSIndexPath*)indexPath
+{
+    if (!image) return;
+    
+    NSMutableDictionary * thumbnailDic = thumbnailImages[indexPath.section];
+    [thumbnailDic setObject:image forKey:@(indexPath.row)];
+}
+
+// Get viewController of NSIndexPath
+- (UIViewController*)getViewControllerAtIndexPath:(NSIndexPath*)indexPath
+{
+    NSMutableDictionary * viewControllerDic = viewControllers[indexPath.section];
+    if (viewControllerDic[@(indexPath.row)]) {
+        return viewControllerDic[@(indexPath.row)];
+    } else {
+        if ([self.dataSource respondsToSelector:@selector(viewControllerForIndexPath:)]) {
+            return [self.dataSource viewControllerForIndexPath:indexPath];
+        }
+    }
+    return nil;
+}
+
+// Save viewController
+- (void)saveViewControler:(UIViewController*)controller atIndexPath:(NSIndexPath*)indexPath
+{
+    if (!controller) return;
+    
+    NSMutableDictionary * viewControllerDic = viewControllers[indexPath.section];
+    [viewControllerDic setObject:controller forKey:@(indexPath.row)];
+}
+
+// Take picture of UIView
 - (UIImage*)imageWithView:(UIView*)view
 {
     UIGraphicsBeginImageContextWithOptions(view.bounds.size, NO, 0.0);
@@ -755,6 +995,13 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     UIImage * img = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return img;
+}
+
+// Duplicate UIView
+- (UIView*)duplicate:(UIView*)view
+{
+    NSData * tempArchive = [NSKeyedArchiver archivedDataWithRootObject:view];
+    return [NSKeyedUnarchiver unarchiveObjectWithData:tempArchive];
 }
 
 #pragma mark - Clean up

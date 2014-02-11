@@ -15,7 +15,7 @@
 - (UILabel*)label
 {
     if (!_label) {
-        _label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, kHeaderTitleHeight)];
+        _label = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, self.frame.size.width, kHeaderTitleHeight-40)];
         [self addSubview:_label];
     }
     return _label;
@@ -24,7 +24,7 @@
 - (UIView*)containView
 {
     if (!_containView) {
-        _containView = [[UIView alloc] initWithFrame:CGRectMake(0, kHeaderTitleHeight, self.frame.size.width, self.frame.size.height - kHeaderTitleHeight)];
+        _containView = [[UIView alloc] initWithFrame:CGRectMake(0, kHeaderTitleHeight + 20, self.frame.size.width, self.frame.size.height - kHeaderTitleHeight)];
         [self addSubview:_containView];
     }
     return _containView;
