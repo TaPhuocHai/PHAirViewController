@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 
 #import "PHSessionView.h"
-#import "PHMenuItemView.h"
 
 @protocol PHAirMenuDelegate <NSObject>
 @optional
@@ -17,8 +16,8 @@
 - (void)didSelectRowAtIndex:(NSIndexPath*)indexPath;
 
 - (void)willShowAirViewController;
-- (void)willHidenAirViewController;
-- (void)didHidenAirViewController;
+- (void)willHideAirViewController;
+- (void)didHideAirViewController;
 @end
 
 @protocol PHAirMenuDataSource <NSObject>

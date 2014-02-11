@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		489325E918AA5D6A00B6D392 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 48F2B37418AA51F400B47D4B /* Main.storyboard */; };
 		48F2B36318AA51F400B47D4B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48F2B36218AA51F400B47D4B /* Foundation.framework */; };
 		48F2B36518AA51F400B47D4B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48F2B36418AA51F400B47D4B /* CoreGraphics.framework */; };
 		48F2B36718AA51F400B47D4B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48F2B36618AA51F400B47D4B /* UIKit.framework */; };
 		48F2B36D18AA51F400B47D4B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 48F2B36B18AA51F400B47D4B /* InfoPlist.strings */; };
 		48F2B36F18AA51F400B47D4B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 48F2B36E18AA51F400B47D4B /* main.m */; };
 		48F2B37318AA51F400B47D4B /* PHAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 48F2B37218AA51F400B47D4B /* PHAppDelegate.m */; };
-		48F2B37618AA51F400B47D4B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 48F2B37418AA51F400B47D4B /* Main.storyboard */; };
 		48F2B37B18AA51F400B47D4B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 48F2B37A18AA51F400B47D4B /* Images.xcassets */; };
 		48F2B38218AA51F400B47D4B /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48F2B38118AA51F400B47D4B /* XCTest.framework */; };
 		48F2B38318AA51F400B47D4B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48F2B36218AA51F400B47D4B /* Foundation.framework */; };
@@ -26,7 +26,6 @@
 		48F2B3AF18AA52A400B47D4B /* UIViewAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 48F2B3A418AA52A400B47D4B /* UIViewAdditions.m */; };
 		48F2B3B018AA52A400B47D4B /* SKBounceAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 48F2B3A718AA52A400B47D4B /* SKBounceAnimation.m */; };
 		48F2B3B118AA52A400B47D4B /* PHAirViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 48F2B3AA18AA52A400B47D4B /* PHAirViewController.m */; };
-		48F2B3B218AA52A400B47D4B /* PHMenuItemView.m in Sources */ = {isa = PBXBuildFile; fileRef = 48F2B3AC18AA52A400B47D4B /* PHMenuItemView.m */; };
 		48F2B3B318AA52A400B47D4B /* PHSessionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 48F2B3AE18AA52A400B47D4B /* PHSessionView.m */; };
 		48F2B3B518AA53F400B47D4B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48F2B3B418AA53F400B47D4B /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
@@ -71,8 +70,6 @@
 		48F2B3A718AA52A400B47D4B /* SKBounceAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKBounceAnimation.m; sourceTree = "<group>"; };
 		48F2B3A918AA52A400B47D4B /* PHAirViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PHAirViewController.h; sourceTree = "<group>"; };
 		48F2B3AA18AA52A400B47D4B /* PHAirViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PHAirViewController.m; sourceTree = "<group>"; };
-		48F2B3AB18AA52A400B47D4B /* PHMenuItemView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PHMenuItemView.h; sourceTree = "<group>"; };
-		48F2B3AC18AA52A400B47D4B /* PHMenuItemView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PHMenuItemView.m; sourceTree = "<group>"; };
 		48F2B3AD18AA52A400B47D4B /* PHSessionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PHSessionView.h; sourceTree = "<group>"; };
 		48F2B3AE18AA52A400B47D4B /* PHSessionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PHSessionView.m; sourceTree = "<group>"; };
 		48F2B3B418AA53F400B47D4B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -224,8 +221,6 @@
 			children = (
 				48F2B3A918AA52A400B47D4B /* PHAirViewController.h */,
 				48F2B3AA18AA52A400B47D4B /* PHAirViewController.m */,
-				48F2B3AB18AA52A400B47D4B /* PHMenuItemView.h */,
-				48F2B3AC18AA52A400B47D4B /* PHMenuItemView.m */,
 				48F2B3AD18AA52A400B47D4B /* PHSessionView.h */,
 				48F2B3AE18AA52A400B47D4B /* PHSessionView.m */,
 			);
@@ -312,7 +307,7 @@
 			files = (
 				48F2B37B18AA51F400B47D4B /* Images.xcassets in Resources */,
 				48F2B36D18AA51F400B47D4B /* InfoPlist.strings in Resources */,
-				48F2B37618AA51F400B47D4B /* Main.storyboard in Resources */,
+				489325E918AA5D6A00B6D392 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -336,7 +331,6 @@
 				48F2B3AF18AA52A400B47D4B /* UIViewAdditions.m in Sources */,
 				48F2B3B118AA52A400B47D4B /* PHAirViewController.m in Sources */,
 				48F2B39E18AA527A00B47D4B /* PHMenuViewController.m in Sources */,
-				48F2B3B218AA52A400B47D4B /* PHMenuItemView.m in Sources */,
 				48F2B3A018AA527A00B47D4B /* PHViewController.m in Sources */,
 				48F2B36F18AA51F400B47D4B /* main.m in Sources */,
 				48F2B3B018AA52A400B47D4B /* SKBounceAnimation.m in Sources */,

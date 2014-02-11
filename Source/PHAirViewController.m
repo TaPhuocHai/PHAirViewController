@@ -861,8 +861,8 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 - (void)hideAirViewOnComplete:(void (^)(void))complete
 {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(willHidenAirViewController)]) {
-        [self.delegate willHidenAirViewController];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(willHideAirViewController)]) {
+        [self.delegate willHideAirViewController];
     }
     
     [UIView animateWithDuration:kDuration
@@ -890,8 +890,8 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
          
          self.leftView.layer.transform = CATransform3DIdentity;
          
-         if (self.delegate && [self.delegate respondsToSelector:@selector(didHidenAirViewController)]) {
-             [self.delegate didHidenAirViewController];
+         if (self.delegate && [self.delegate respondsToSelector:@selector(didHideAirViewController)]) {
+             [self.delegate didHideAirViewController];
          }
          
          if (complete) complete();

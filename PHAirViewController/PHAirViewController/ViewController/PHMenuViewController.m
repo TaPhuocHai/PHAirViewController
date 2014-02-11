@@ -9,12 +9,15 @@
 #import "PHMenuViewController.h"
 
 @implementation PHMenuViewController{
-    NSData * data;
+    NSArray * data;
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    // Init menu data
+    
 }
 
 #pragma mark - PHAirMenuDelegate
