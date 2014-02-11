@@ -70,6 +70,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     
     // sesion view
     NSMutableDictionary    * sessionViews;
+    // pan for scroll
     UIPanGestureRecognizer * panGestureRecognizer;
     
     // current index sesion view
@@ -90,6 +91,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
         ]
      */
     NSArray * thumbnailImages;
+    
     /* @[ // session 0
      @{@(0) : view controller 0,@(1) : view controller 1},
      // session 1
@@ -99,9 +101,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     NSArray * viewControllers;
 }
 
-@synthesize contentView = _contentView,
-            airImageView = _airImageView,
-            currentIndexPath = _currentIndexPath;
+@synthesize contentView = _contentView, airImageView = _airImageView;
 
 - (id)initWithRootViewController:(UIViewController*)viewController
                      atIndexPath:(NSIndexPath*)indexPath
@@ -128,6 +128,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     
     lastIndexInSession = [NSMutableDictionary dictionary];
     lastIndexInSession[@(0)] = @(0);
+    self.currentIndexPath = [NSIndexPath indexPathForRow:0 inSection:0];
     
     // Set delegate & dataSource
     self.delegate = self;
@@ -223,22 +224,9 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     {
         segue.performBlock = ^(PHAirViewControllerSegue* rvc_segue, UIViewController* svc, UIViewController* dvc)
         {
-            [self bringViewControllerToTop:dvc atIndexPath:[NSIndexPath indexPathForRow:999 inSection:0]];
+            [self bringViewControllerToTop:dvc atIndexPath:self.currentIndexPath];
         };
     }
-}
-
-#pragma mark - property
-
-- (NSIndexPath*)currentIndexPath
-{
-    return [NSIndexPath indexPathForRow:[lastIndexInSession[@(currentIndexSession)] intValue]
-                              inSection:currentIndexSession];
-}
-
-- (void)setCurrentIndexPath:(NSIndexPath *)currentIndexPath
-{
-    _currentIndexPath = currentIndexPath;
 }
 
 #pragma mark - ContentView
@@ -547,14 +535,14 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
         PHSessionView * sessionView = sessionViews[@(i)];
         if (!sessionView) {
             sessionView = [[PHSessionView alloc] initWithFrame:CGRectMake(30, 0, kSessionWidth, sessionHeight)];
+            sessionView.label.textColor = [UIColor colorWithRed:0.45 green:0.45 blue:0.45 alpha:1];
+            sessionView.label.backgroundColor = [UIColor clearColor];
+            sessionView.label.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
             [sessionViews setObject:sessionView forKey:@(i)];
         }
         // Set title for header session
         if ([self.dataSource respondsToSelector:@selector(titleForHeaderAtSession:)]) {
             sessionView.label.text = [self.dataSource titleForHeaderAtSession:i];
-            sessionView.label.textColor = [UIColor colorWithRed:0.45 green:0.45 blue:0.45 alpha:1];
-            sessionView.label.backgroundColor = [UIColor clearColor];
-            sessionView.label.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:16];
         }
     }
     
@@ -662,10 +650,10 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
         int indexHighlight = [lastIndexInSession[@(i)] intValue];
         //
         for (id object in sessionView.containView.allSubviews) {
-        if ([object isKindOfClass:[UIButton class]]) {
-            UIButton * button = object;
-            button.highlighted = (button.tag == indexHighlight) ? YES : NO;
-        }
+            if ([object isKindOfClass:[UIButton class]]) {
+                UIButton * button = object;
+                button.highlighted = (button.tag == indexHighlight) ? YES : NO;
+            }
         }
     }
 }
@@ -689,34 +677,34 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     // Save row touch in session
     lastIndexInSession[@(currentIndexSession)] = @(button.superview.tag);
     
-    NSIndexPath * indexPath = [NSIndexPath indexPathForRow:button.tag
-                                                 inSection:button.superview.tag];
+    self.currentIndexPath = [NSIndexPath indexPathForRow:button.tag
+                                               inSection:button.superview.tag];
     
     // Should select ?
     if (self.delegate && [self.delegate respondsToSelector:@selector(shouldSelectRowAtIndex:)]) {
-        if (![self.delegate shouldSelectRowAtIndex:indexPath]) {
+        if (![self.delegate shouldSelectRowAtIndex:self.currentIndexPath]) {
             return;
         }
     }
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectRowAtIndex:)]) {
-        [self.delegate didSelectRowAtIndex:indexPath];
+        [self.delegate didSelectRowAtIndex:self.currentIndexPath];
     }
     
     // Get thumbnailImage
-    UIImage * nextThumbnail = [self getThumbnailImageAtIndexPath:indexPath];
+    UIImage * nextThumbnail = [self getThumbnailImageAtIndexPath:self.currentIndexPath];
     if (nextThumbnail) {
         self.airImageView.image = nextThumbnail;
     }
     
     [self hideAirViewOnComplete:^{
-        UIViewController * controller = [self getViewControllerAtIndexPath:indexPath];
+        UIViewController * controller = [self getViewControllerAtIndexPath:self.currentIndexPath];
         if (controller) {
-            [self bringViewControllerToTop:controller atIndexPath:indexPath];
+            [self bringViewControllerToTop:controller atIndexPath:self.currentIndexPath];
         } else if (self.storyboard) {
             // Ưu tiên sử dụng storyboard
             if (self.dataSource && [self.dataSource respondsToSelector:@selector(segueForRowAtIndexPath:)]) {
-                NSString * segue = [self.dataSource segueForRowAtIndexPath:indexPath];
+                NSString * segue = [self.dataSource segueForRowAtIndexPath:self.currentIndexPath];
                 if (segue.length) {
                     @try {
                         [self performSegueWithIdentifier:segue sender:nil];
@@ -726,13 +714,13 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
             } else {
                 // Sử dụng viewController
                 if (self.dataSource && [self.dataSource respondsToSelector:@selector(viewControllerForIndexPath:)]) {
-                    UIViewController * controller = [self.dataSource viewControllerForIndexPath:indexPath];
-                    [self bringViewControllerToTop:controller atIndexPath:indexPath];
+                    UIViewController * controller = [self.dataSource viewControllerForIndexPath:self.currentIndexPath];
+                    [self bringViewControllerToTop:controller atIndexPath:self.currentIndexPath];
                 }
             }
         } else {
-            UIViewController * controller = [self.dataSource viewControllerForIndexPath:indexPath];
-            [self bringViewControllerToTop:controller atIndexPath:indexPath];
+            UIViewController * controller = [self.dataSource viewControllerForIndexPath:self.currentIndexPath];
+            [self bringViewControllerToTop:controller atIndexPath:self.currentIndexPath];
         }
     }];
 }
@@ -946,7 +934,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     self.contentView.layer.anchorPoint = anchorPoint3;
 }
 
-#pragma mark - helper
+#pragma mark - Helper
 
 // Get thumbnailImage of NSIndexPath
 - (UIImage*)getThumbnailImageAtIndexPath:(NSIndexPath*)indexPath
@@ -1056,8 +1044,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 - (void)perform
 {
-    if ( _performBlock != nil )
-    {
+    if (_performBlock != nil) {
         _performBlock( self, self.sourceViewController, self.destinationViewController );
     }
 }
