@@ -798,7 +798,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     
     // Init panGestureRecognizer for scroll on sessionViews
     if (!panGestureRecognizer) {
-        panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(_handleRevealGesture:)];
+        panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleRevealGesture:)];
         panGestureRecognizer.delegate = self;
         [self.leftView addGestureRecognizer:panGestureRecognizer];
     }
