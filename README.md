@@ -20,16 +20,17 @@ YT("http://www.youtube.com/watch?v=JDL7HxkFFic", print = TRUE)
 * See Demo2 project
 * Create PHMenuViewControler subclass from PHAirViewController, init PHMenuViewController with code :
 
-      - (id)initWithRootViewController:(UIViewController*)viewController
+        - (id)initWithRootViewController:(UIViewController*)viewController
                      atIndexPath:(NSIndexPath*)indexPath
 * Implement `PHAirMenuDelegate` and `PHAirMenuDataSource`       
 * To show menu, call function:
 
-      [self.airViewController showAirViewFromViewController:self.navigationController complete:nil];               
+        [self.airViewController showAirViewFromViewController:self.navigationController complete:nil];               
+        
 * On my view controller, for swipe to show menu, in `viewDidLoad` :
 
-      - (void)viewDidLoad
-      {
+        - (void)viewDidLoad
+        {
           [super viewDidLoad];
           .....
     
@@ -37,7 +38,7 @@ YT("http://www.youtube.com/watch?v=JDL7HxkFFic", print = TRUE)
           self.phSwipeHander = ^{
                [bself.airViewController showAirViewFromViewController:bself.navigationController complete:nil];
           };
-      }     
+        }     
 
 #### Storyboard
 * See PHAirViewController project
