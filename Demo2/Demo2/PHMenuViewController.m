@@ -43,7 +43,17 @@
     PHViewController * viewController = [[PHViewController alloc] init];
     UINavigationController * controller = [[UINavigationController alloc] initWithRootViewController:viewController];
     viewController.label.text = [NSString stringWithFormat:@"View controller %d in session %d", indexPath.row, indexPath.section];
-    viewController.view.backgroundColor = [UIColor colorWithRed:indexPath.row/(float)3 green:1 blue:indexPath.row/(float)3 alpha:1];
+    switch (indexPath.row) {
+        case 0:
+            viewController.view.backgroundColor = [UIColor greenColor];
+            break;
+        case 1:
+            viewController.view.backgroundColor = [UIColor yellowColor];
+            break;
+        case 2:
+            viewController.view.backgroundColor = [UIColor redColor];
+            break;
+    }
     return controller;
 }
 
