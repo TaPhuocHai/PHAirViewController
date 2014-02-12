@@ -15,6 +15,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.view.backgroundColor = [UIColor yellowColor];
     
     // Init menu data
     NSArray * session1 = [NSArray arrayWithObjects:@"phair_root",@"segue1", nil];
