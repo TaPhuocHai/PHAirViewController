@@ -18,7 +18,7 @@ YT("http://www.youtube.com/watch?v=JDL7HxkFFic", print = TRUE)
  
 #### Code
 * See Demo2 project
-* Create PHMenuViewControler subclass from PHAirViewController, init PHMenuViewController with code :
+* Create PHMenuViewController subclass from PHAirViewController, init PHMenuViewController with code :
 
         - (id)initWithRootViewController:(UIViewController*)viewController
                      atIndexPath:(NSIndexPath*)indexPath
