@@ -27,7 +27,6 @@
 - (NSString*)titleForRowAtIndexPath:(NSIndexPath*)indexPath;
 - (NSString*)titleForHeaderAtSession:(NSInteger)session;
 @optional
-- (NSIndexPath*)indexPathForRootViewController;
 - (UIImage*)thumbnailImageAtIndexPath:(NSIndexPath*)indexPath;
 - (NSString*)segueForRowAtIndexPath:(NSIndexPath*)indexPath;
 - (UIViewController*)viewControllerForIndexPath:(NSIndexPath*)indexPath;
@@ -57,12 +56,16 @@
 @optional
 @end
 
-
 #pragma mark - UIViewController(PHAirViewController) Category
 
 // We add a category of UIViewController to let childViewControllers easily access their parent PHAirViewController
 @interface UIViewController(PHAirViewController)
+
+@property (nonatomic, readonly) UISwipeGestureRecognizer * phSwipeGestureRecognizer;
+@property (nonatomic, copy)     void (^phSwipeHander)(void);
+
 - (PHAirViewController*)airViewController;
+
 @end
 
 

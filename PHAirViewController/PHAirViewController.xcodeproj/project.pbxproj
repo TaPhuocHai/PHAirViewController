@@ -24,7 +24,6 @@
 		48F2B39F18AA527A00B47D4B /* PHView1ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 48F2B39B18AA527A00B47D4B /* PHView1ViewController.m */; };
 		48F2B3A018AA527A00B47D4B /* PHViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 48F2B39D18AA527A00B47D4B /* PHViewController.m */; };
 		48F2B3AF18AA52A400B47D4B /* UIViewAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 48F2B3A418AA52A400B47D4B /* UIViewAdditions.m */; };
-		48F2B3B018AA52A400B47D4B /* SKBounceAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 48F2B3A718AA52A400B47D4B /* SKBounceAnimation.m */; };
 		48F2B3B118AA52A400B47D4B /* PHAirViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 48F2B3AA18AA52A400B47D4B /* PHAirViewController.m */; };
 		48F2B3B318AA52A400B47D4B /* PHSessionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 48F2B3AE18AA52A400B47D4B /* PHSessionView.m */; };
 		48F2B3B518AA53F400B47D4B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48F2B3B418AA53F400B47D4B /* QuartzCore.framework */; };
@@ -66,8 +65,6 @@
 		48F2B39D18AA527A00B47D4B /* PHViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PHViewController.m; sourceTree = "<group>"; };
 		48F2B3A318AA52A400B47D4B /* UIViewAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIViewAdditions.h; sourceTree = "<group>"; };
 		48F2B3A418AA52A400B47D4B /* UIViewAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIViewAdditions.m; sourceTree = "<group>"; };
-		48F2B3A618AA52A400B47D4B /* SKBounceAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKBounceAnimation.h; sourceTree = "<group>"; };
-		48F2B3A718AA52A400B47D4B /* SKBounceAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKBounceAnimation.m; sourceTree = "<group>"; };
 		48F2B3A918AA52A400B47D4B /* PHAirViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PHAirViewController.h; sourceTree = "<group>"; };
 		48F2B3AA18AA52A400B47D4B /* PHAirViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PHAirViewController.m; sourceTree = "<group>"; };
 		48F2B3AD18AA52A400B47D4B /* PHSessionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PHSessionView.h; sourceTree = "<group>"; };
@@ -192,7 +189,6 @@
 			isa = PBXGroup;
 			children = (
 				48F2B3A218AA52A400B47D4B /* KNAdditions */,
-				48F2B3A518AA52A400B47D4B /* SKBounceAnimation */,
 			);
 			name = Library;
 			path = ../../Library;
@@ -205,15 +201,6 @@
 				48F2B3A418AA52A400B47D4B /* UIViewAdditions.m */,
 			);
 			path = KNAdditions;
-			sourceTree = "<group>";
-		};
-		48F2B3A518AA52A400B47D4B /* SKBounceAnimation */ = {
-			isa = PBXGroup;
-			children = (
-				48F2B3A618AA52A400B47D4B /* SKBounceAnimation.h */,
-				48F2B3A718AA52A400B47D4B /* SKBounceAnimation.m */,
-			);
-			path = SKBounceAnimation;
 			sourceTree = "<group>";
 		};
 		48F2B3A818AA52A400B47D4B /* Source */ = {
@@ -333,7 +320,6 @@
 				48F2B39E18AA527A00B47D4B /* PHMenuViewController.m in Sources */,
 				48F2B3A018AA527A00B47D4B /* PHViewController.m in Sources */,
 				48F2B36F18AA51F400B47D4B /* main.m in Sources */,
-				48F2B3B018AA52A400B47D4B /* SKBounceAnimation.m in Sources */,
 				48F2B3B318AA52A400B47D4B /* PHSessionView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

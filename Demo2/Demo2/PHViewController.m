@@ -1,19 +1,18 @@
 //
-//  PHView1ViewController.m
-//  PHAirTransaction
+//  PHViewController.m
+//  Demo2
 //
-//  Created by Ta Phuoc Hai on 1/14/14.
+//  Created by Ta Phuoc Hai on 2/12/14.
 //  Copyright (c) 2014 Phuoc Hai. All rights reserved.
 //
 
-#import "PHView1ViewController.h"
+#import "PHViewController.h"
 
-@implementation PHView1ViewController
+@implementation PHViewController
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
     UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.frame = CGRectMake(0, 0, 50, 35);
     [button setTitle:@"Menu" forState:UIControlStateNormal];
@@ -31,6 +30,19 @@
 - (void)leftButtonTouch
 {
     [self.airViewController showAirViewFromViewController:self.navigationController complete:nil];
+}
+
+- (UILabel*)label
+{
+    if (!_label) {
+        _label = [[UILabel alloc] initWithFrame:CGRectMake(0, 80, 320, 40)];
+        _label.backgroundColor = [UIColor clearColor];
+        _label.textAlignment = NSTextAlignmentCenter;
+        _label.font = [UIFont boldSystemFontOfSize:16];
+        _label.textColor = [UIColor redColor];
+        [self.view addSubview:_label];
+    }
+    return _label;
 }
 
 @end

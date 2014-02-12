@@ -31,6 +31,7 @@
 
 #import "PHAirViewController.h"
 #import <QuartzCore/QuartzCore.h>
+#import <objc/runtime.h>
 
 #define kMenuItemHeight 50
 #define kSessionWidth   220
@@ -1030,6 +1031,53 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 @implementation UIViewController(PHAirViewController)
 
+#pragma mark - Property
+
+static char const * const SwipeTagHandle = "SWIPE_HANDER";
+static char const * const SwipeObject    = "SWIPE_OBJECT";
+
+- (UISwipeGestureRecognizer*)phSwipeGestureRecognizer{
+    UISwipeGestureRecognizer * swipe = objc_getAssociatedObject(self, SwipeObject);
+    if (!swipe) {
+        swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeHanle)];
+        swipe.direction = UISwipeGestureRecognizerDirectionRight;
+        objc_setAssociatedObject(self, SwipeObject, swipe, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    return swipe;
+}
+
+- (void)setPhSwipeHander:(void (^)(void))phSwipeHander
+{
+    if (phSwipeHander) {
+        if (self.phSwipeGestureRecognizer.view) {
+            [self.phSwipeGestureRecognizer.view removeGestureRecognizer:self.phSwipeGestureRecognizer];
+        }
+        
+        if (self.navigationController) {
+            [self.navigationController.view addGestureRecognizer:self.phSwipeGestureRecognizer];
+        } else {
+            [self.view addGestureRecognizer:self.phSwipeGestureRecognizer];
+        }
+        objc_setAssociatedObject(self, SwipeTagHandle, phSwipeHander, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    } else {
+        if (self.phSwipeGestureRecognizer.view) {
+            [self.phSwipeGestureRecognizer.view removeGestureRecognizer:self.phSwipeGestureRecognizer];
+        }
+    }
+}
+
+- (void (^)(void))phSwipeHander
+{
+    return objc_getAssociatedObject(self, SwipeTagHandle);
+}
+
+- (void)swipeHanle
+{
+    if (self.phSwipeHander) {
+        self.phSwipeHander();
+    }
+}
+
 - (PHAirViewController*)airViewController
 {
     UIViewController *parent = self;
@@ -1037,6 +1085,11 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     
     while ( nil != (parent = [parent parentViewController]) && ![parent isKindOfClass:revealClass] ) {}
     return (id)parent;
+}
+
+- (void)dealloc
+{
+    self.phSwipeHander = nil;
 }
 
 @end

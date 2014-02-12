@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:Demo2/Demo2.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:PHAirViewController/PHAirViewController.xcodeproj">
    </FileRef>
 </Workspace>
