@@ -5,9 +5,17 @@
 
 ## Examples
 
-[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/JDL7HxkFFic/0.jpg)](http://www.youtube.com/watch?v=JDL7HxkFFic)
+[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/JDL7HxkFFic/hqdefault.jpg)](http://www.youtube.com/watch?v=JDL7HxkFFic)
 
 YT("http://www.youtube.com/watch?v=JDL7HxkFFic", print = TRUE)
+
+<object width="425" height="350">
+  <param name="movie" value="http://www.youtube.com/user/taphuochai?v=JDL7HxkFFic" />
+  <param name="wmode" value="transparent" />
+  <embed src="http://www.youtube.com/user/taphuochai?v=JDL7HxkFFic"
+         type="application/x-shockwave-flash"
+         wmode="transparent" width="420" height="315" />
+</object>
 
 ## Requirements
 
