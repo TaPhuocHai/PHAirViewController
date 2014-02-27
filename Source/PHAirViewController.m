@@ -100,6 +100,8 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
      ]
      */
     NSArray * viewControllers;
+    
+    float heightAirMenuRow;
 }
 
 @synthesize contentView = _contentView, airImageView = _airImageView;
@@ -177,6 +179,9 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     
     self.leftView.alpha = 0;
     self.rightView.alpha = 0;
+    
+     // Default height row value
+    heightAirMenuRow = 36;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -223,9 +228,15 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 {
     if ( [segue isKindOfClass:[PHAirViewControllerSegue class]] && sender == nil )
     {
+        NSIndexPath * nextIndexPath = self.currentIndexPath;
+        if ([segue.identifier isEqualToString:PHSegueRootIdentifier]) {
+            if (self.delegate && [self.delegate respondsToSelector:@selector(indexPathDefaultValue)]) {
+                nextIndexPath = [self.delegate indexPathDefaultValue];
+            }
+        }
         segue.performBlock = ^(PHAirViewControllerSegue* rvc_segue, UIViewController* svc, UIViewController* dvc)
         {
-            [self bringViewControllerToTop:dvc atIndexPath:self.currentIndexPath];
+            [self bringViewControllerToTop:dvc atIndexPath:nextIndexPath];
         };
     }
 }
@@ -516,6 +527,11 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     // Get number session
     session = [self.dataSource numberOfSession];
     
+    // Get height
+    if ([self.delegate respondsToSelector:@selector(heightForAirMenuRow)]) {
+        heightAirMenuRow = [self.delegate heightForAirMenuRow];
+    }
+    
     // Init
     NSMutableArray * tempThumbnails = [NSMutableArray array];
     NSMutableArray * tempViewControllers = [NSMutableArray array];
@@ -559,7 +575,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
             [view removeFromSuperview];
         }
 
-        int firstTop = (sessionView.containView.frame.size.height - [rowsOfSession[i] intValue] * 36)/2;
+        int firstTop = (sessionView.containView.frame.size.height - [rowsOfSession[i] intValue] * heightAirMenuRow)/2;
         if (firstTop < 0) firstTop = 0;
         for (int j = 0; j < [rowsOfSession[i] intValue]; j ++) {
             NSString * title = [self.dataSource titleForRowAtIndexPath:[NSIndexPath indexPathForRow:j inSection:i]];
@@ -571,7 +587,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
             [button setTitleColor:_titleHighlightColor forState:UIControlStateSelected];
             button.titleLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:14];
             button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
-            button.frame = CGRectMake(0, firstTop + 36*j, 200, 25);
+            button.frame = CGRectMake(0, firstTop + heightAirMenuRow*j, 200, heightAirMenuRow);
             button.tag = j;
             sessionView.containView.tag = i;
             [sessionView.containView addSubview:button];
@@ -851,6 +867,12 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
      }];
     
     _airImageView.tag = 1;
+}
+
+- (void)switchToViewController:(UIViewController*)controller atIndexPath:(NSIndexPath*)indexPath
+{
+    [self bringViewControllerToTop:controller
+                       atIndexPath:indexPath];
 }
 
 - (void)hideAirViewOnComplete:(void (^)(void))complete

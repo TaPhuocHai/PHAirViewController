@@ -18,6 +18,10 @@
 - (void)willShowAirViewController;
 - (void)willHideAirViewController;
 - (void)didHideAirViewController;
+
+- (float)heightForAirMenuRow;
+- (NSIndexPath*)indexPathDefaultValue;
+
 @end
 
 @protocol PHAirMenuDataSource <NSObject>
@@ -41,12 +45,13 @@
 @property (nonatomic, assign) id <PHAirMenuDataSource> dataSource;
 
 @property (nonatomic, readonly) UIViewController * fontViewController;
-@property (nonatomic)           NSIndexPath      * currentIndexPath;
+@property (nonatomic, strong)   NSIndexPath      * currentIndexPath;
 
 - (id)initWithRootViewController:(UIViewController*)viewController atIndexPath:(NSIndexPath*)indexPath;
 
 - (void)reloadData;
 - (void)showAirViewFromViewController:(UIViewController*)controller complete:(void (^)(void))complete;
+- (void)switchToViewController:(UIViewController*)controller atIndexPath:(NSIndexPath*)indexPath;
 
 @end
 
