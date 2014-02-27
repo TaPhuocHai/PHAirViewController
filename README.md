@@ -5,9 +5,9 @@
 
 ## Examples
 
-[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/JDL7HxkFFic/hqdefault.jpg)](http://www.youtube.com/watch?v=JDL7HxkFFic)
+[![YouTube video](http://img.youtube.com/vi/JDL7HxkFFic/hqdefault.jpg)](http://www.youtube.com/watch?v=JDL7HxkFFic)
 
-YT("http://www.youtube.com/watch?v=JDL7HxkFFic", print = TRUE)
+[YouTube](http://www.youtube.com/watch?v=JDL7HxkFFic)
 
 ## Requirements
 
