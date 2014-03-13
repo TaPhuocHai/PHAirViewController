@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4882D84B18D19DBF00CA0012 /* Main-ipad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4882D84A18D19DBF00CA0012 /* Main-ipad.storyboard */; };
 		489325E918AA5D6A00B6D392 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 48F2B37418AA51F400B47D4B /* Main.storyboard */; };
 		48F2B36318AA51F400B47D4B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48F2B36218AA51F400B47D4B /* Foundation.framework */; };
 		48F2B36518AA51F400B47D4B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 48F2B36418AA51F400B47D4B /* CoreGraphics.framework */; };
@@ -40,6 +41,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4882D84A18D19DBF00CA0012 /* Main-ipad.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Main-ipad.storyboard"; sourceTree = "<group>"; };
 		48F2B35F18AA51F400B47D4B /* PHAirViewController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PHAirViewController.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		48F2B36218AA51F400B47D4B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		48F2B36418AA51F400B47D4B /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -136,6 +138,7 @@
 				48F2B37118AA51F400B47D4B /* PHAppDelegate.h */,
 				48F2B37218AA51F400B47D4B /* PHAppDelegate.m */,
 				48F2B37418AA51F400B47D4B /* Main.storyboard */,
+				4882D84A18D19DBF00CA0012 /* Main-ipad.storyboard */,
 				48F2B39718AA527A00B47D4B /* ViewController */,
 				48F2B37A18AA51F400B47D4B /* Images.xcassets */,
 				48F2B36918AA51F400B47D4B /* Supporting Files */,
@@ -295,6 +298,7 @@
 				48F2B37B18AA51F400B47D4B /* Images.xcassets in Resources */,
 				48F2B36D18AA51F400B47D4B /* InfoPlist.strings in Resources */,
 				489325E918AA5D6A00B6D392 /* Main.storyboard in Resources */,
+				4882D84B18D19DBF00CA0012 /* Main-ipad.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -454,6 +458,7 @@
 				INFOPLIST_FILE = "PHAirViewController/PHAirViewController-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -468,6 +473,7 @@
 				INFOPLIST_FILE = "PHAirViewController/PHAirViewController-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

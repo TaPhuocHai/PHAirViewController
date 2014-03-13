@@ -752,6 +752,8 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 {
     if (!_wrapperView) {
         _wrapperView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width,self.view.height)];
+        _wrapperView.autoresizesSubviews = YES;
+        _wrapperView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     }
     return _wrapperView;
 }
@@ -760,6 +762,8 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 {
     if (!_contentView) {
         _contentView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width,self.view.height)];
+        _contentView.autoresizesSubviews = YES;
+        _contentView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     }
     return _contentView;
 }
@@ -769,6 +773,8 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     if (!_airImageView) {
         _airImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height)];
         _airImageView.userInteractionEnabled = YES;
+        _airImageView.autoresizesSubviews = YES;
+        _airImageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     }
     return _airImageView;
 }
