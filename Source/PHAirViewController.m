@@ -662,9 +662,9 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     
     // Init top/middle/bottom session view
     if (sessionViews.count == 1) {
-        topSession = sessionViews[@(0)];
-        middleSession = (PHSessionView*)[self duplicate:topSession];
-        bottomSession = (PHSessionView*)[self duplicate:topSession];
+        middleSession = sessionViews[@(0)];
+        topSession = (PHSessionView*)[self duplicate:middleSession];
+        bottomSession = (PHSessionView*)[self duplicate:middleSession];
     } else if(sessionViews.count == 2) {
         middleSession = sessionViews[@(currentIndexSession)];
         if (currentIndexSession == 0) {
