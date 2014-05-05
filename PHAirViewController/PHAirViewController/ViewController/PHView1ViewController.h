@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PHViewController.h"
 
-@interface PHView1ViewController : UIViewController
+@interface PHView1ViewController : PHViewController
 
 @end

@@ -52,6 +52,7 @@
 - (void)reloadData;
 - (void)showAirViewFromViewController:(UIViewController*)controller complete:(void (^)(void))complete;
 - (void)switchToViewController:(UIViewController*)controller atIndexPath:(NSIndexPath*)indexPath;
+- (void)switchToViewController:(UIViewController*)controller;
 
 @end
 

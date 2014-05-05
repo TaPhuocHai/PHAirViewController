@@ -12,7 +12,7 @@
 
 @interface PHSessionView : UIView
 
-@property (nonatomic, strong) UILabel * label;
-@property (nonatomic, strong) UIView  * containView;
+@property (nonatomic, strong) UIButton * button;
+@property (nonatomic, strong) UIView   * containView;
 
 @end

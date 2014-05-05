@@ -12,13 +12,15 @@
 
 #pragma mark - property
 
-- (UILabel*)label
+- (UIButton*)button
 {
-    if (!_label) {
-        _label = [[UILabel alloc] initWithFrame:CGRectMake(0, 40, self.frame.size.width, kHeaderTitleHeight-40)];
-        [self addSubview:_label];
+    if (!_button) {
+        _button = [UIButton buttonWithType:UIButtonTypeCustom];
+        _button.frame = CGRectMake(0, 40, self.frame.size.width, kHeaderTitleHeight-40);
+        _button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentLeft;
+        [self addSubview:_button];
     }
-    return _label;
+    return _button;
 }
 
 - (UIView*)containView
@@ -34,8 +36,8 @@
 
 - (void)dealloc
 {
-    [_label removeFromSuperview];
-    _label = nil;
+    [_button removeFromSuperview];
+    _button = nil;
     [_containView removeFromSuperview];
     _containView = nil;
 }

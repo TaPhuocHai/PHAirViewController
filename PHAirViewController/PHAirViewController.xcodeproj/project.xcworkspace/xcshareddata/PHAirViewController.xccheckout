@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>B93CC76A-EA72-4B53-8583-CD6E838D0B78</string>
+	<key>IDESourceControlProjectName</key>
+	<string>PHAirViewController</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>C340E4B9-24AB-4913-8E16-707FEED792BC</key>
+		<string>ssh://github.com/taphuochai/PHAirViewController.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>PHAirViewController/PHAirViewController.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>C340E4B9-24AB-4913-8E16-707FEED792BC</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://github.com/taphuochai/PHAirViewController.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>C340E4B9-24AB-4913-8E16-707FEED792BC</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>C340E4B9-24AB-4913-8E16-707FEED792BC</string>
+			<key>IDESourceControlWCCName</key>
+			<string>PHAirViewController</string>
+		</dict>
+	</array>
+</dict>
+</plist>
