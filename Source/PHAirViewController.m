@@ -335,6 +335,10 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 - (void)handleRevealGesture:(UIPanGestureRecognizer *)recognizer
 {
+    if (sessionViews.count == 0 || sessionViews.count == 1) {
+        return;
+    }
+    
     switch ( recognizer.state )
     {
         case UIGestureRecognizerStateBegan:
@@ -640,10 +644,17 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 
 - (void)layoutContaintView
 {
-    if (sessionViews.count == 0) {
+    if (sessionViews.count == 1) {
         middleSession = sessionViews[@(0)];
         topSession = nil;
         bottomSession = nil;
+        
+        middleSession.top = middleSession.height;
+        [self.leftView addSubview:middleSession];
+        self.leftView.top = - (self.leftView.height)/3;        
+        
+        // Update color
+        [self updateButtonColor];
         return;
     }
     
