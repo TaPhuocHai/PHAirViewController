@@ -43,10 +43,10 @@
 #define kRightViewTransZ     -150
 
 #define kAirImageViewRotateMax -42
-
-#define kDuration 0.2f
+#define kDuration              0.2f
 
 #define kIndexPathOutMenu [NSIndexPath indexPathForRow:999 inSection:0]
+#define kDebug NO
 
 CGFloat AirDegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
 CGFloat AirRadiansToDegrees(CGFloat radians) {return radians * 180/M_PI;};
@@ -182,6 +182,15 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     self.panGestureRecognizer.delegate = self;
     [self.leftView addGestureRecognizer:self.panGestureRecognizer];
 
+    UISwipeGestureRecognizer * swipe2 = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(closeAirMenuView:)];
+    swipe2.direction = UISwipeGestureRecognizerDirectionLeft;
+    [self.contentView addGestureRecognizer:swipe2];
+    
+    if (kDebug) {
+        self.contentView.backgroundColor = [UIColor greenColor];
+        self.leftView.backgroundColor = [UIColor redColor];
+        self.airImageView.backgroundColor = [UIColor yellowColor];
+    }
     
     // Setup animation
     [self setupAnimation];
@@ -275,6 +284,14 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
 }
 
 #pragma mark - AirImageView gesture
+
+- (void)closeAirMenuView:(UISwipeGestureRecognizer*)swipe
+{
+    [self hideAirViewOnComplete:^{
+        [self bringViewControllerToTop:self.fontViewController
+                           atIndexPath:self.currentIndexPath];
+    }];
+}
 
 - (void)handleSwipeOnAirImageView:(UISwipeGestureRecognizer*)swipe
 {
