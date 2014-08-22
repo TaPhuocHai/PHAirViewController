@@ -1,0 +1,14 @@
+PODS:
+  - PHAirView (0.1.0)
+
+DEPENDENCIES:
+  - PHAirView (from `../`)
+
+EXTERNAL SOURCES:
+  PHAirView:
+    :path: ../
+
+SPEC CHECKSUMS:
+  PHAirView: c276782f6e9226820e4a734f0e61342f3790a7ef
+
+COCOAPODS: 0.33.1

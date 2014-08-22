@@ -5,20 +5,20 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>9395ECDD-5F35-45E7-A652-E66145278C62</string>
+	<string>C060C817-3008-4836-BD1E-26F3AA211589</string>
 	<key>IDESourceControlProjectName</key>
-	<string>PHAirViewController</string>
+	<string>Demo2</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>9BB3AC6F-65A1-4A09-A855-30D7CD3A64D0</key>
 		<string>ssh://github.com/thedamfr/PHAirViewController.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>PHAirViewController.xcworkspace</string>
+	<string>Demo2/Demo2.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>9BB3AC6F-65A1-4A09-A855-30D7CD3A64D0</key>
-		<string>..</string>
+		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>ssh://github.com/thedamfr/PHAirViewController.git</string>

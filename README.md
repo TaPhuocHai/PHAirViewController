@@ -24,6 +24,17 @@
 
 ## Usage
  
+### Cocoapods
+
+This project is available via Cocoapods. Add this line to your Podfile :
+```
+pod "PHAirView"
+```
+Then do :
+```
+pod install
+```
+
 #### Code
 * See Demo2 project
 * Create PHMenuViewController subclass from PHAirViewController, init PHMenuViewController with code :

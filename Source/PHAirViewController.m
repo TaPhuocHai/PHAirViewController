@@ -32,6 +32,7 @@
 #import "PHAirViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import <objc/runtime.h>
+#import "UIViewAdditions.h"
 
 #define kMenuItemHeight 80
 #define kSessionWidth   220
