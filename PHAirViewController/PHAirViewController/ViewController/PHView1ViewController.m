@@ -29,6 +29,8 @@
     [button addTarget:self action:@selector(leftButtonTouch) forControlEvents:UIControlEventTouchUpInside];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:button];
     
+    self.view.backgroundColor = [UIColor whiteColor];
+    
     typeof(self) bself = self;
     self.phSwipeHander = ^{
         [bself.airViewController showAirViewFromViewController:bself.navigationController complete:nil];

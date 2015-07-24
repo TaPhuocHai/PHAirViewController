@@ -142,10 +142,12 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     
     // Init contentView
     [self.view addSubview:self.wrapperView];
+    [self.wrapperView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
     [self.wrapperView addSubview:self.contentView];
     
     // Init left/rightView
     [self.contentView addSubview:self.leftView];
+    [self.contentView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
     [self.contentView addSubview:self.rightView];
     
     // Init airImageView
@@ -238,8 +240,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     [self addChildViewController:_fontViewController];
     UIView * controllerView = _fontViewController.view;
     controllerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    controllerView.frame = self.view.bounds;
-    NSLog(@"boud frame = %@", NSStringFromCGRect(self.view.bounds));
+    controllerView.frame = self.contentView.frame;
     if ( [controller respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)] && [controllerView isKindOfClass:[UIScrollView class]] )
     {
         BOOL adjust = (BOOL)[controller performSelector:@selector(automaticallyAdjustsScrollViewInsets) withObject:nil];
@@ -448,7 +449,7 @@ static CGFloat statusBarAdjustment( UIView* view )
         }
     }
     
-    distanceScroll = abs(self.view.height/2 - distanceScroll);
+    distanceScroll = fabsf(self.view.height/2 - distanceScroll);
     
     // Tính độ xoay
     // 0 tương ứng 0
@@ -860,7 +861,9 @@ static CGFloat statusBarAdjustment( UIView* view )
 - (UIView*)wrapperView
 {
     if (!_wrapperView) {
-        _wrapperView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width,self.view.height)];
+        CGRect frame = [[UIScreen mainScreen] bounds];
+        _wrapperView = [[UIView alloc] initWithFrame:frame];
+        _wrapperView.backgroundColor = [UIColor whiteColor];
     }
     return _wrapperView;
 }
@@ -868,7 +871,9 @@ static CGFloat statusBarAdjustment( UIView* view )
 - (UIView*)contentView
 {
     if (!_contentView) {
-        _contentView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width,self.view.height)];
+        CGRect frame = [[UIScreen mainScreen] bounds];
+        NSLog(@"content size = %@", NSStringFromCGRect(frame));
+        _contentView = [[UIView alloc] initWithFrame:frame];
     }
     return _contentView;
 }
@@ -876,7 +881,8 @@ static CGFloat statusBarAdjustment( UIView* view )
 - (UIImageView*)airImageView
 {
     if (!_airImageView) {
-        _airImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height)];
+        CGRect frame = [[UIScreen mainScreen] bounds];
+        _airImageView = [[UIImageView alloc] initWithFrame:frame];
         _airImageView.userInteractionEnabled = YES;
     }
     return _airImageView;
@@ -886,7 +892,8 @@ static CGFloat statusBarAdjustment( UIView* view )
 {
     if (!_leftView) {
         // leftView content sessionView
-        _leftView = [[UIView alloc] initWithFrame:CGRectMake(0, -(self.view.height - kHeaderTitleHeight), kSessionWidth, (self.view.height - kHeaderTitleHeight)*3)];
+        CGRect frame = [[UIScreen mainScreen] bounds];
+        _leftView = [[UIView alloc] initWithFrame:CGRectMake(0, -(frame.size.height - kHeaderTitleHeight), kSessionWidth, (frame.size.height - kHeaderTitleHeight)*3)];
         _leftView.userInteractionEnabled = YES;
     }
     return _leftView;
@@ -895,8 +902,15 @@ static CGFloat statusBarAdjustment( UIView* view )
 - (UIView*)rightView
 {
     if (!_rightView) {
-        _rightView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.width, self.view.height)];
+        CGRect frame = [[UIScreen mainScreen] bounds];
+        _rightView = [[UIView alloc] initWithFrame:frame];
         _rightView.userInteractionEnabled = YES;
+        
+        CALayer *layer = _rightView.layer;
+        layer.shadowColor = [[UIColor blackColor] CGColor];
+        layer.shadowOpacity = 0.6;
+        layer.shadowOffset = CGSizeMake(0.0f, 1.0f);;
+        layer.shadowRadius = 0.6f;
     }
     return _rightView;
 }
