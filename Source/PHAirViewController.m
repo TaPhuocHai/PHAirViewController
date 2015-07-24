@@ -239,8 +239,36 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
     UIView * controllerView = _fontViewController.view;
     controllerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     controllerView.frame = self.view.bounds;
+    NSLog(@"boud frame = %@", NSStringFromCGRect(self.view.bounds));
+    if ( [controller respondsToSelector:@selector(automaticallyAdjustsScrollViewInsets)] && [controllerView isKindOfClass:[UIScrollView class]] )
+    {
+        BOOL adjust = (BOOL)[controller performSelector:@selector(automaticallyAdjustsScrollViewInsets) withObject:nil];
+        
+        if ( adjust )
+        {
+            [(id)controllerView setContentInset:UIEdgeInsetsMake(statusBarAdjustment(_contentView), 0, 0, 0)];
+        }
+    }
+    
     [self.view addSubview:controllerView];
-    [_fontViewController didMoveToParentViewController:self];
+    //[_fontViewController didMoveToParentViewController:self];
+}
+
+#pragma mark - StatusBar Helper Function
+
+// computes the required offset adjustment due to the status bar for the passed in view,
+// it will return the statusBar height if view fully overlaps the statusBar, otherwise returns 0.0f
+static CGFloat statusBarAdjustment( UIView* view )
+{
+    CGFloat adjustment = 0.0f;
+    UIApplication *app = [UIApplication sharedApplication];
+    CGRect viewFrame = [view convertRect:view.bounds toView:[app keyWindow]];
+    CGRect statusBarFrame = [app statusBarFrame];
+    
+    if ( CGRectIntersectsRect(viewFrame, statusBarFrame) )
+        adjustment = fminf(statusBarFrame.size.width, statusBarFrame.size.height);
+    
+    return adjustment;
 }
 
 #pragma mark storyboard support
@@ -255,6 +283,7 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
                 nextIndexPath = [self.delegate indexPathDefaultValue];
             }
         }
+        
         segue.performBlock = ^(PHAirViewControllerSegue* rvc_segue, UIViewController* svc, UIViewController* dvc)
         {
             [self bringViewControllerToTop:dvc atIndexPath:nextIndexPath];
@@ -808,7 +837,9 @@ static NSString * const PHSegueRootIdentifier  = @"phair_root";
                     @try {
                         [self performSegueWithIdentifier:segue sender:nil];
                     }
-                    @catch(NSException *exception) {}
+                    @catch(NSException *exception) {
+                        NSLog(@"ex = %@", exception.userInfo);
+                    }
                 }
             } else {
                 // Sử dụng viewController

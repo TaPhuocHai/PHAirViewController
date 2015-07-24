@@ -10,29 +10,29 @@
 	<string>PHAirViewController</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>C340E4B9-24AB-4913-8E16-707FEED792BC</key>
-		<string>ssh://github.com/taphuochai/PHAirViewController.git</string>
+		<key>67EA9522AA88A1DA9DA6DB40ACC54E5CFF272BBC</key>
+		<string>github.com:taphuochai/PHAirViewController.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>PHAirViewController/PHAirViewController.xcodeproj/project.xcworkspace</string>
+	<string>PHAirViewController/PHAirViewController.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>C340E4B9-24AB-4913-8E16-707FEED792BC</key>
+		<key>67EA9522AA88A1DA9DA6DB40ACC54E5CFF272BBC</key>
 		<string>../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>ssh://github.com/taphuochai/PHAirViewController.git</string>
+	<string>github.com:taphuochai/PHAirViewController.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>C340E4B9-24AB-4913-8E16-707FEED792BC</string>
+	<string>67EA9522AA88A1DA9DA6DB40ACC54E5CFF272BBC</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>C340E4B9-24AB-4913-8E16-707FEED792BC</string>
+			<string>67EA9522AA88A1DA9DA6DB40ACC54E5CFF272BBC</string>
 			<key>IDESourceControlWCCName</key>
 			<string>PHAirViewController</string>
 		</dict>

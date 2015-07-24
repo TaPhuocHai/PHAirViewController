@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4514" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" variant="6xAndEarlier" propertyAccessControl="none" initialViewController="GCK-NW-Guv">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="15A226f" targetRuntime="iOS.CocoaTouch" variant="6xAndEarlier" propertyAccessControl="none" initialViewController="GCK-NW-Guv">
     <dependencies>
-        <deployment defaultVersion="1536" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
     <scenes>
         <!--View1 View Controller-->
@@ -10,17 +10,19 @@
             <objects>
                 <viewController id="7y7-ma-2dO" customClass="PHView1ViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="VYD-5C-7vY">
-                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <rect key="frame" x="0.0" y="20" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="root view" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="dmO-Yb-fW5">
                                 <rect key="frame" x="102" y="223" width="117" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <animations/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                 <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
+                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="m3M-J6-kwn"/>
@@ -38,9 +40,10 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="VCk-SZ-a8W">
                         <rect key="frame" x="0.0" y="-44" width="0.0" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <animations/>
                     </navigationBar>
                     <connections>
-                        <segue destination="7y7-ma-2dO" kind="relationship" relationship="rootViewController" id="z3r-Mb-cFs"/>
+                        <segue destination="7y7-ma-2dO" kind="relationship" relationship="rootViewController" id="6bb-vd-GoS"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2Nf-Zl-QoP" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -54,6 +57,7 @@
                     <view key="view" contentMode="scaleToFill" id="8i6-1K-UnQ">
                         <rect key="frame" x="0.0" y="20" width="320" height="548"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="ORg-ay-qbW"/>
@@ -79,10 +83,12 @@
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="view controller 1" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="EXV-jm-IXh">
                                 <rect key="frame" x="97" y="246" width="126" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <animations/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
+                        <animations/>
                         <color key="backgroundColor" red="0.035294117649999998" green="0.61176470589999998" blue="0.81176470590000005" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
                     <navigationItem key="navigationItem" id="8rc-ql-8kZ"/>
@@ -90,7 +96,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0fP-Tf-Ty0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2066" y="412"/>
+            <point key="canvasLocation" x="2066" y="398"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="j49-Ta-OTs">
@@ -99,9 +105,10 @@
                     <navigationItem key="navigationItem" id="lH7-eg-DSK"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Kir-Fe-5CY">
                         <autoresizingMask key="autoresizingMask"/>
+                        <animations/>
                     </navigationBar>
                     <connections>
-                        <segue destination="4lk-Ir-43j" kind="relationship" relationship="rootViewController" id="j14-dT-Qa0"/>
+                        <segue destination="4lk-Ir-43j" kind="relationship" relationship="rootViewController" id="lJ0-Ac-Ix8"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="caX-Zz-txf" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -119,10 +126,12 @@
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="view controller 2" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="hmB-zy-2iz">
                                 <rect key="frame" x="97" y="246" width="126" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <animations/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
+                        <animations/>
                         <color key="backgroundColor" red="0.69411764710000001" green="0.47450980390000003" blue="0.36078431370000003" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
                     <navigationItem key="navigationItem" id="Z2x-zt-f57"/>
@@ -139,6 +148,7 @@
                     <navigationItem key="navigationItem" id="d31-TU-5W2"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="e9x-ww-h0o">
                         <autoresizingMask key="autoresizingMask"/>
+                        <animations/>
                     </navigationBar>
                     <connections>
                         <segue destination="52J-fP-CIb" kind="relationship" relationship="rootViewController" id="Ypz-qw-ZQn"/>
@@ -159,10 +169,12 @@
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="view controller 3" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="edc-e8-KZF">
                                 <rect key="frame" x="97" y="246" width="126" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <animations/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
+                        <animations/>
                         <color key="backgroundColor" red="0.68235294120000001" green="0.68235294120000001" blue="0.68235294120000001" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
                     <navigationItem key="navigationItem" id="2wv-jf-OPp"/>
@@ -179,6 +191,7 @@
                     <navigationItem key="navigationItem" id="YlC-sD-fO5"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="V1m-he-f2s">
                         <autoresizingMask key="autoresizingMask"/>
+                        <animations/>
                     </navigationBar>
                     <connections>
                         <segue destination="4PK-FA-8Vt" kind="relationship" relationship="rootViewController" id="JUq-21-H5W"/>

@@ -10,9 +10,16 @@
 
 @implementation PHView1ViewController
 
+- (void)loadView
+{
+    [super loadView];
+    NSLog(@"loadView");
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    NSLog(@"viewDidLoad");
     
     UIButton * button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.frame = CGRectMake(0, 0, 50, 35);
@@ -26,6 +33,25 @@
     self.phSwipeHander = ^{
         [bself.airViewController showAirViewFromViewController:bself.navigationController complete:nil];
     };
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    NSLog(@"viewWillAppear");
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    NSLog(@"viewDidAppear");
+    NSLog(@"frame = %@", NSStringFromCGRect(self.view.bounds));
+}
+
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    NSLog(@"viewDidLayoutSubviews");
 }
 
 - (void)leftButtonTouch
